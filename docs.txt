@@ -1,0 +1,20 @@
+public override bool FinishedLaunching (UIApplication app, NSDictionary options)
+{
+  ImageView = new UIImageView (new CGRect (20, 20, 280, 280));
+  ImageView.ContentMode = UIViewContentMode.ScaleAspectFill;
+
+  vc = new UIViewController ();
+  vc.View = ImageView;
+  window.RootViewController = vc;
+
+  window.MakeKeyAndVisible ();
+  window.BackgroundColor = UIColor.Black;
+
+  if (!SetupCaptureSession ())
+    window.AddSubview (new UILabel (new CGRect (20, 20, 200, 60)) { Text = "No input device" });
+
+  return true;
+}
+
+
+https://developer.apple.com/library/ios/qa/qa1702/_index.html

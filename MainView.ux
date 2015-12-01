@@ -1,0 +1,6 @@
+<App Theme="Basic">
+	<Panel>
+		<ViewFinder />
+	</Panel>
+</App>
+

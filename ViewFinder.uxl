@@ -1,0 +1,88 @@
+<Package>
+<Extensions Backend="CPlusPlus" Condition="iOS">
+       <Type Name="ViewFinder">
+               <Set Source.FileExtension="mm" />
+               <Require Source.Import="AVFoundation/AVFoundation.h" />
+           <Method Signature="SetSampleBuffer(VFIOS, iOS.AVFoundation.AVCaptureVideoDataOutput)">
+              <Body>
+                <![CDATA[
+                  id delegate_id = (id)$0;
+                  id output_id = $1->Handle();
+                  dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+                  [output_id setSampleBufferDelegate:delegate_id queue:queue];
+                  dispatch_release(queue);
+                ]]>
+              </Body>
+           </Method>
+           <Method Signature="GetAVCaptureVideoDataOutput():ObjC.ID">
+            <Body>
+              <![CDATA[
+                AVCaptureVideoDataOutput *output = [[[AVCaptureVideoDataOutput alloc] init] autorelease];
+                output.videoSettings =
+                            [NSDictionary dictionaryWithObject:
+                                [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+                output.minFrameDuration = CMTimeMake(1, 15);
+                return (id)output;
+              ]]>
+            </Body>
+           </Method>
+           <Method Signature="SetupCaptureSessionImpl()">
+               <Body>
+                   <![CDATA[
+                   NSError *error = nil;
+                   id _this_id = (id)$$;
+
+                   // Create the session
+                   AVCaptureSession *session = [[AVCaptureSession alloc] init];
+
+                   // Configure the session to produce lower resolution video frames, if your
+                   // processing algorithm can cope. We'll specify medium quality for the
+                   // chosen device.
+                   session.sessionPreset = AVCaptureSessionPresetMedium;
+
+                   // Find a suitable AVCaptureDevice
+                   AVCaptureDevice *device = [AVCaptureDevice
+                                            defaultDeviceWithMediaType:AVMediaTypeVideo];
+
+                   // Create a device input with the device and add it to the session.
+                   AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device
+                                                                                   error:&error];
+
+                   if (!input) {
+                       // Handling the error appropriately.
+                   }
+                   [session addInput:input];
+
+                   // Create a VideoDataOutput and add it to the session
+                   AVCaptureVideoDataOutput *output = [[[AVCaptureVideoDataOutput alloc] init] autorelease];
+                   [session addOutput:output];
+
+                   // Configure your output.
+                   dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
+                   [output setSampleBufferDelegate:_this_id queue:queue];
+                   dispatch_release(queue);
+
+                   // Specify the pixel format
+                   output.videoSettings =
+                               [NSDictionary dictionaryWithObject:
+                                   [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                   forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+
+                   // If you wish to cap the frame rate to a known value, such as 15 fps, set
+                   // minFrameDuration.
+                   output.minFrameDuration = CMTimeMake(1, 15);
+
+                   // Start the session running to start the flow of data
+                   [session startRunning];
+
+                   // Assign session to an ivar.
+                   [_this_id setSession:session];
+                   ]]>
+               </Body>
+           </Method>
+
+       </Type>
+
+</Extensions>
+</Package>
