@@ -17,6 +17,7 @@ public class ViewFinder : Panel
 
     AddDrawCost(1.0);
     if defined(iOS) {
+      imageFromSampleBuffer(null);
     	var v = new VFIOS();
     	v.SessionID = null;
     	SetupCaptureSessionImpl(v);
@@ -50,7 +51,9 @@ public class ViewFinder : Panel
   extern(iOS)
   public void StartSession(iOS.AVFoundation.AVCaptureSession sess);
 
-
+  [TargetSpecificImplementation]
+  extern(iOS)
+  public Uno.Graphics.Texture2D imageFromSampleBuffer(ObjC.ID buffer);
 
   public void SetupCaptureSession() {
     var AVMediaTypeVideo = "vide"; // AVMediaTypeVideo

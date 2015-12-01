@@ -5,6 +5,11 @@
                <ProcessFile Build.SourceFile="-.CaptureWrapper.mm" />
                <ProcessFile Build.HeaderFile="-.CaptureWrapper.h" />
                <Require Source.Import="AVFoundation/AVFoundation.h" />
+               <Require Source.Include="ImageIO/ImageIO.h" />
+               <Require Source.Include="MobileCoreServices/MobileCoreServices.h" />
+               <Require iOS.Build.Framework="ImageIO" />
+               <Require iOS.Build.Framework="MobileCoreServices" />
+
                <Require Key="Source.Declaration">
                    <![CDATA[
                        #include "-.CaptureWrapper.h"
@@ -44,6 +49,76 @@
               ]]>
             </Body>
            </Method>
+           <Method Signature="imageFromSampleBuffer(ObjC.ID):Uno.Graphics.Texture2D">
+            <Body>
+              <![CDATA[
+               if ($0 == nil) {
+                return nil;
+               }
+               // Need a pool, since we are running on a different thread
+               uAutoReleasePool pool;
+
+               // Get a CMSampleBuffer's Core Video image buffer for the media data
+               ::CMSampleBufferRef sampleBuffer = (::CMSampleBufferRef)$0;
+               CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+               // Lock the base address of the pixel buffer
+               CVPixelBufferLockBaseAddress(imageBuffer, 0);
+
+               // Get the number of bytes per row for the pixel buffer
+               void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+
+               // Get the number of bytes per row for the pixel buffer
+               size_t bytesPerRow1 = CVPixelBufferGetBytesPerRow(imageBuffer);
+               // Get the pixel buffer width and height
+               size_t width1 = CVPixelBufferGetWidth(imageBuffer);
+               size_t height1 = CVPixelBufferGetHeight(imageBuffer);
+
+               // Create a device-dependent RGB color space
+               ::CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+               // Create a bitmap graphics context with the sample buffer data
+               ::CGContextRef context1 = CGBitmapContextCreate(baseAddress, width1, height1, 8,
+                 bytesPerRow1, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+               // Create a Quartz image from the pixel data in the bitmap graphics context
+               CGImageRef quartzImage = CGBitmapContextCreateImage(context1);
+
+               NSUInteger width = CGImageGetWidth(quartzImage);
+               NSUInteger height = CGImageGetHeight(quartzImage);
+               NSUInteger bytesPerPixel = 4;
+               NSUInteger bytesPerRow = bytesPerPixel * width;
+               NSUInteger bitsPerComponent = 8;
+
+               void *rawData = malloc(height * width * 4);
+
+               ::CGContextRef context = CGBitmapContextCreate(
+                   rawData, width, height, bitsPerComponent, bytesPerRow, colorSpace,
+                   kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+               CGContextDrawImage(context, CGRectMake(0, 0, width, height), quartzImage);
+
+               // Unlock the pixel buffer
+               CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+
+               // Free up the context and color space
+               CGContextRelease(context);
+               CGContextRelease(context1);
+               CGColorSpaceRelease(colorSpace);
+
+               // Release the Quartz image
+               CGImageRelease(quartzImage);
+
+               // @{Uno.Int2} size = { width, height };
+               @{Uno.Int2} size = { static_cast<int>(width), static_cast<int>(height) };
+               @{Uno.Graphics.Texture2D} texture = @{Uno.Graphics.Texture2D(Uno.Int2,Uno.Graphics.Format,bool):Call(size,@{Uno.Graphics.Format.RGBA8888},false)};
+               @{Uno.Graphics.Texture2D:Of(texture).Update(Uno.IntPtr):Call(rawData)};
+
+               free(rawData);
+
+               return texture;
+              ]]>
+            </Body>
+           </Method>
+
            <Method Signature="SetupCaptureSessionImpl(VFIOS)">
                <Body>
                    <![CDATA[
@@ -76,9 +151,9 @@
                    [session addOutput:output];
 
                    // Configure your output.
-                   id delegate_id = (id)$0;
                    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
                    CaptureWrapper *cw = [[CaptureWrapper alloc] init];
+                   [cw setViewFinderInst:$$];
                    [output setSampleBufferDelegate:cw queue:queue];
                    dispatch_release(queue);
                    // Specify the pixel format

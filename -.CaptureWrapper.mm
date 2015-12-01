@@ -1,11 +1,14 @@
 #import <AVFoundation/AVFoundation.h>
 #include "-.CaptureWrapper.h"
+#include <app/-.ViewFinder.h>
 
 
 @implementation CaptureWrapper
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     // doing copying to currentBuffer
     NSLog(@"Capture2");
+    app::ViewFinder *view = [self ViewFinderInst];
+    view->imageFromSampleBuffer((id)sampleBuffer);
     UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
 }
 

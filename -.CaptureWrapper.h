@@ -5,10 +5,12 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#include <app/-.ViewFinder.h>
 
 @interface CaptureWrapper : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate> {
     CMSampleBufferRef currentBuffer;
 }
+@property     app::ViewFinder *ViewFinderInst;
 @end
 
 #endif
