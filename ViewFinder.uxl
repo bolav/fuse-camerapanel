@@ -49,6 +49,22 @@
               ]]>
             </Body>
            </Method>
+           <Method Signature="showImage(ObjC.ID)">
+            <Body>
+              <![CDATA[
+                if ($0 == nil) {
+                 return;
+                }
+                uAutoReleasePool pool;
+                ::app::iOS::UIKit::UIView* view = ::uPtr< ::app::iOS::UIKit::UIViewController*>(::uPtr< ::app::iOS::UIKit::UIWindow*>(::uPtr< ::app::iOS::UIKit::UIApplication*>(::app::iOS::UIKit::UIApplication___sharedApplication(NULL))->KeyWindow())->RootViewController())->View();
+                ::UIView *nView = (::UIView *)view->Handle();
+                UIImageView *myImageView = [[UIImageView alloc] init];
+                myImageView.image = $0;
+                [nView addSubview:myImageView];
+              ]]>
+            </Body>
+           </Method>
+
            <Method Signature="textureFromSampleBuffer(ObjC.ID):Uno.Graphics.Texture2D">
             <Body>
               <![CDATA[
@@ -166,6 +182,15 @@
                    // If you wish to cap the frame rate to a known value, such as 15 fps, set
                    // minFrameDuration.
                    //output.minFrameDuration = CMTimeMake(1, 15);
+
+                   /*
+                   // This just shows the preview
+                   ::app::iOS::UIKit::UIView* view = ::uPtr< ::app::iOS::UIKit::UIViewController*>(::uPtr< ::app::iOS::UIKit::UIWindow*>(::uPtr< ::app::iOS::UIKit::UIApplication*>(::app::iOS::UIKit::UIApplication___sharedApplication(NULL))->KeyWindow())->RootViewController())->View();
+
+                   UIView *aView = (UIView *)view->Handle();
+                   AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:session];
+                   previewLayer.frame = aView.bounds; // Assume you want the preview layer to fill the view.
+                   [aView.layer addSublayer:previewLayer]; */
 
                    // Start the session running to start the flow of data
                    [session startRunning];

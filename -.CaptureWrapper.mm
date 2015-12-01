@@ -9,10 +9,13 @@
     NSLog(@"Capture2");
     app::ViewFinder *view = [self ViewFinderInst];
     view->textureFromSampleBuffer((id)sampleBuffer);
-    UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+    // UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
     int r = [self Runs];
     r++;
-    if (r > 100) [[self Session] stopRunning];
+    if (r > 100) {
+        [[self Session] stopRunning];
+        // view->showImage((id)image);
+    }
     [self setRuns:r];
 }
 

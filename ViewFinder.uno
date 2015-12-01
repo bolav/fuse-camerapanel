@@ -7,42 +7,64 @@ using Fuse.Scripting;
 using Fuse.Reactive;
 using Fuse.Controls;
 using Uno.Compiler.ExportTargetInterop;
+using Uno.Graphics;
 
 [TargetSpecificImplementation]
 public class ViewFinder : Panel
 {
   internal Fuse.Controls.Image Photo;
 
+  BundleFile _ConfigFile;
+
   public ViewFinder () {
     Photo = new Fuse.Controls.Image();
+    ImageSource = new Fuse.Resources.TextureImageSource();
+    Photo.Source = ImageSource;
     this.Children.Add(Photo);
+    Texture = import Texture2D( "Assets/tower1.png" );
+    Texture2 = import Texture2D( "Assets/tower2.png" );
+    ImageSource.Texture = Texture;
+
   }
   protected override void OnRooted()
   {
     base.OnRooted();
 
-    AddDrawCost(1.0);
     if defined(iOS) {
       textureFromSampleBuffer(null); // striping hack
       PostTexture(null);            // striping hack
+      // showImage(null);            // striping hack
     	var v = new VFIOS();
-    	v.SessionID = null;
+    	v.SessionID = null;            // striping hack
+      var view = iOS.UIKit.UIApplication._sharedApplication().KeyWindow.RootViewController.View;             // striping hack
     	SetupCaptureSessionImpl(v);
     	vfios = v;
       	// SetupCaptureSession();
     }
   }
+
+  Fuse.Resources.TextureImageSource ImageSource {
+    get; set;
+  }
+
+  Uno.Graphics.Texture2D Texture {
+    get; set;
+  }
+  Uno.Graphics.Texture2D Texture2 {
+    get; set;
+  }
+
+  int one = 0;
+
   
   protected override void OnUnrooted()
   {
-    RemoveDrawCost(1.0);
-
     base.OnUnrooted();
   }
 
   [TargetSpecificImplementation]
   extern(iOS)
-  public void SetupCaptureSessionImpl(VFIOS v);
+  public void SetupCaptureSessionImpl(VFIOS vf);
 
   [TargetSpecificImplementation]
   extern(iOS)
@@ -61,6 +83,10 @@ public class ViewFinder : Panel
   [TargetSpecificImplementation]
   extern(iOS)
   public Uno.Graphics.Texture2D textureFromSampleBuffer(ObjC.ID buffer);
+
+  [TargetSpecificImplementation]
+  extern(iOS)
+  public void showImage(ObjC.ID image);
 
 
   class TextureEnclosure {
@@ -82,16 +108,28 @@ public class ViewFinder : Panel
     }
   }
 
+  public void SetTexture2 (Uno.Graphics.Texture2D texture) {
+    // var imageSource = new Fuse.Resources.TextureImageSource();
+  }
   public void SetTexture (Uno.Graphics.Texture2D texture) {
-    var imageSource = new Fuse.Resources.TextureImageSource();
-    imageSource.Texture = texture;
-    Photo.Source = imageSource;
+    // Experimental.TextureLoader.TextureLoader.PngByteArrayToTexture2D(new Buffer(data), SetTexture2);
+    if (one == 0) {
+      ImageSource.Texture = Texture2;
+      one = 1;
+    }
+    else if (one == 1) {
+      ImageSource.Texture  = Texture;
+      one = 2;
+    } else {
+      ImageSource.Texture = texture;
+      one = 0;
+    }
+    InvalidateVisual();
   }
 
   public void PostTexture (Uno.Graphics.Texture2D texture) {
     if (texture == null) return;
     UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
-
   }
 
   public void SetupCaptureSession() {
