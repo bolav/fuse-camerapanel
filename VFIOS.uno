@@ -5,13 +5,22 @@ public extern(iOS) class VFIOS: iOS.AVFoundation.IAVCaptureAudioDataOutputSample
 {
 
 	public VFIOS() {
-
+		var a = new iOS.AVFoundation.AVCaptureOutput();
+		var b = new iOS.CoreMedia.CMSampleBufferRef();
+		var c = new iOS.AVFoundation.AVCaptureConnection();
+		captureOutputDidOutputSampleBufferFromConnection(a,b,c);
 	}
 
 	public iOS.AVFoundation.AVCaptureSession Session 
 	{
 		get; set;
 	}
+
+	public ObjC.ID SessionID
+	{
+		get; set;
+	}
+
 
 
 	public void captureOutputDidOutputSampleBufferFromConnection(iOS.AVFoundation.AVCaptureOutput captureOutput, iOS.CoreMedia.CMSampleBufferRef sampleBuffer, iOS.AVFoundation.AVCaptureConnection connection) {

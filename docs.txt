@@ -18,3 +18,31 @@ public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 
 
 https://developer.apple.com/library/ios/qa/qa1702/_index.html
+
+
+http://stackoverflow.com/questions/12821364/cant-use-dispatch-sync-in-c-class-with-objective-c-code
+
+
+Add to .mm
+
+@implementation Wrapper
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+    // doing copying to currentBuffer
+    NSLog(@"Capture2");
+}
+@end
+
+
+Add to .h
+
+#ifdef __OBJC__
+
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+
+@interface Wrapper : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate> {
+    CMSampleBufferRef currentBuffer;
+}
+@end
+
+#endif

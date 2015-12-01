@@ -2,7 +2,16 @@
 <Extensions Backend="CPlusPlus" Condition="iOS">
        <Type Name="ViewFinder">
                <Set Source.FileExtension="mm" />
+               <ProcessFile Build.SourceFile="-.CaptureWrapper.mm" />
+               <ProcessFile Build.HeaderFile="-.CaptureWrapper.h" />
                <Require Source.Import="AVFoundation/AVFoundation.h" />
+               <Require Key="Source.Declaration">
+                   <![CDATA[
+                       #include "-.CaptureWrapper.h"
+                   ]]>
+               </Require>
+
+
            <Method Signature="SetSampleBuffer(VFIOS, iOS.AVFoundation.AVCaptureVideoDataOutput)">
               <Body>
                 <![CDATA[
@@ -22,16 +31,23 @@
                             [NSDictionary dictionaryWithObject:
                                 [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
                                 forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-                output.minFrameDuration = CMTimeMake(1, 15);
+                // output.minFrameDuration = CMTimeMake(1, 15);
                 return (id)output;
               ]]>
             </Body>
            </Method>
-           <Method Signature="SetupCaptureSessionImpl()">
+           <Method Signature="StartSession(iOS.AVFoundation.AVCaptureSession)">
+            <Body>
+              <![CDATA[
+                id session = $0->Handle();
+                [session startRunning];
+              ]]>
+            </Body>
+           </Method>
+           <Method Signature="SetupCaptureSessionImpl(VFIOS)">
                <Body>
                    <![CDATA[
                    NSError *error = nil;
-                   id _this_id = (id)$$;
 
                    // Create the session
                    AVCaptureSession *session = [[AVCaptureSession alloc] init];
@@ -50,7 +66,8 @@
                                                                                    error:&error];
 
                    if (!input) {
-                       // Handling the error appropriately.
+                      return;
+                      // Handling the error appropriately.
                    }
                    [session addInput:input];
 
@@ -59,10 +76,11 @@
                    [session addOutput:output];
 
                    // Configure your output.
+                   id delegate_id = (id)$0;
                    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
-                   [output setSampleBufferDelegate:_this_id queue:queue];
+                   CaptureWrapper *cw = [[CaptureWrapper alloc] init];
+                   [output setSampleBufferDelegate:cw queue:queue];
                    dispatch_release(queue);
-
                    // Specify the pixel format
                    output.videoSettings =
                                [NSDictionary dictionaryWithObject:
@@ -71,13 +89,13 @@
 
                    // If you wish to cap the frame rate to a known value, such as 15 fps, set
                    // minFrameDuration.
-                   output.minFrameDuration = CMTimeMake(1, 15);
+                   //output.minFrameDuration = CMTimeMake(1, 15);
 
                    // Start the session running to start the flow of data
                    [session startRunning];
 
                    // Assign session to an ivar.
-                   [_this_id setSession:session];
+                   ::uPtr< ::app::VFIOS*>($0)->SessionID((id)session);
                    ]]>
                </Body>
            </Method>

@@ -17,7 +17,11 @@ public class ViewFinder : Panel
 
     AddDrawCost(1.0);
     if defined(iOS) {
-      SetupCaptureSession();
+    	var v = new VFIOS();
+    	v.SessionID = null;
+    	SetupCaptureSessionImpl(v);
+    	vfios = v;
+      	// SetupCaptureSession();
     }
   }
   
@@ -30,7 +34,7 @@ public class ViewFinder : Panel
 
   [TargetSpecificImplementation]
   extern(iOS)
-  public void SetupCaptureSessionImpl();
+  public void SetupCaptureSessionImpl(VFIOS v);
 
   [TargetSpecificImplementation]
   extern(iOS)
@@ -41,6 +45,12 @@ public class ViewFinder : Panel
   [TargetSpecificImplementation]
   extern(iOS)
   public ObjC.ID GetAVCaptureVideoDataOutput();
+
+  [TargetSpecificImplementation]
+  extern(iOS)
+  public void StartSession(iOS.AVFoundation.AVCaptureSession sess);
+
+
 
   public void SetupCaptureSession() {
     var AVMediaTypeVideo = "vide"; // AVMediaTypeVideo
@@ -62,8 +72,10 @@ public class ViewFinder : Panel
     var output = new iOS.AVFoundation.AVCaptureVideoDataOutput(output_id);
 
     _session.addOutput(output);
-    vfios = new VFIOS();
-    SetSampleBuffer(vfios, output);
+    var _vfios = new VFIOS();
+    SetSampleBuffer(_vfios, output);
+
+    vfios = _vfios;
 
     // var v = iOS.Foundation.NSDictionary._dictionaryWithObjectForKey();
     /*
@@ -75,7 +87,8 @@ public class ViewFinder : Panel
 
 
     // output.setMinFrameDuration(iOS.CoreMedia.Functions.CMTimeMake(1, 15));
-    _session.startRunning();
+    StartSession(_session);
+    // _session.startRunning();
     vfios.Session = _session;
 
   }
