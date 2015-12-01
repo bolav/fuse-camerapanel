@@ -11,13 +11,20 @@ using Uno.Compiler.ExportTargetInterop;
 [TargetSpecificImplementation]
 public class ViewFinder : Panel
 {
+  internal Fuse.Controls.Image Photo;
+
+  public ViewFinder () {
+    Photo = new Fuse.Controls.Image();
+    this.Children.Add(Photo);
+  }
   protected override void OnRooted()
   {
     base.OnRooted();
 
     AddDrawCost(1.0);
     if defined(iOS) {
-      imageFromSampleBuffer(null);
+      textureFromSampleBuffer(null); // striping hack
+      PostTexture(null);            // striping hack
     	var v = new VFIOS();
     	v.SessionID = null;
     	SetupCaptureSessionImpl(v);
@@ -53,7 +60,39 @@ public class ViewFinder : Panel
 
   [TargetSpecificImplementation]
   extern(iOS)
-  public Uno.Graphics.Texture2D imageFromSampleBuffer(ObjC.ID buffer);
+  public Uno.Graphics.Texture2D textureFromSampleBuffer(ObjC.ID buffer);
+
+
+  class TextureEnclosure {
+    public TextureEnclosure (ViewFinder vf, Uno.Graphics.Texture2D texture) {
+      Texture = texture;
+      MyViewFinder = vf;
+    }
+
+    ViewFinder MyViewFinder {
+      get; set;
+    }
+
+    Uno.Graphics.Texture2D Texture {
+      get; set;
+    }
+
+    public void Invoke () {
+      MyViewFinder.SetTexture(Texture);
+    }
+  }
+
+  public void SetTexture (Uno.Graphics.Texture2D texture) {
+    var imageSource = new Fuse.Resources.TextureImageSource();
+    imageSource.Texture = texture;
+    Photo.Source = imageSource;
+  }
+
+  public void PostTexture (Uno.Graphics.Texture2D texture) {
+    if (texture == null) return;
+    UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
+
+  }
 
   public void SetupCaptureSession() {
     var AVMediaTypeVideo = "vide"; // AVMediaTypeVideo

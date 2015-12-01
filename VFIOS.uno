@@ -24,7 +24,7 @@ public extern(iOS) class VFIOS: iOS.AVFoundation.IAVCaptureAudioDataOutputSample
 
 
 	public void captureOutputDidOutputSampleBufferFromConnection(iOS.AVFoundation.AVCaptureOutput captureOutput, iOS.CoreMedia.CMSampleBufferRef sampleBuffer, iOS.AVFoundation.AVCaptureConnection connection) {
-	  debug_log("CAPTURE");
+	  // debug_log("CAPTURE");
 	}
 
 }

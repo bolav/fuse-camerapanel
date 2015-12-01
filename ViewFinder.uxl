@@ -49,7 +49,7 @@
               ]]>
             </Body>
            </Method>
-           <Method Signature="imageFromSampleBuffer(ObjC.ID):Uno.Graphics.Texture2D">
+           <Method Signature="textureFromSampleBuffer(ObjC.ID):Uno.Graphics.Texture2D">
             <Body>
               <![CDATA[
                if ($0 == nil) {
@@ -113,7 +113,7 @@
                @{Uno.Graphics.Texture2D:Of(texture).Update(Uno.IntPtr):Call(rawData)};
 
                free(rawData);
-
+               $$->PostTexture(texture);
                return texture;
               ]]>
             </Body>
@@ -154,6 +154,7 @@
                    dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
                    CaptureWrapper *cw = [[CaptureWrapper alloc] init];
                    [cw setViewFinderInst:$$];
+                   [cw setSession:session];
                    [output setSampleBufferDelegate:cw queue:queue];
                    dispatch_release(queue);
                    // Specify the pixel format

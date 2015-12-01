@@ -11,6 +11,8 @@
     CMSampleBufferRef currentBuffer;
 }
 @property     app::ViewFinder *ViewFinderInst;
+@property     AVCaptureSession *Session;
+@property     int Runs;
 @end
 
 #endif

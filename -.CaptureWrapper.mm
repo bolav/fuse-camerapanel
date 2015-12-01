@@ -8,8 +8,12 @@
     // doing copying to currentBuffer
     NSLog(@"Capture2");
     app::ViewFinder *view = [self ViewFinderInst];
-    view->imageFromSampleBuffer((id)sampleBuffer);
+    view->textureFromSampleBuffer((id)sampleBuffer);
     UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+    int r = [self Runs];
+    r++;
+    if (r > 100) [[self Session] stopRunning];
+    [self setRuns:r];
 }
 
 // Create a UIImage from sample buffer data
