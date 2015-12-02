@@ -8,6 +8,7 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
     // doing copying to currentBuffer
     NSLog(@"Capture2");
+    uAutoReleasePool pool;
     app::ViewFinder *view = [self ViewFinderInst];
     opaqueCMSampleBuffer *buf = sampleBuffer;
     ::app::Uno::Graphics::Texture2D* t2 = view->textureFromSampleBuffer((id)buf);

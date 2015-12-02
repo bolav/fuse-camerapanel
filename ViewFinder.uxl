@@ -186,7 +186,7 @@
                    [session startRunning];
 
                    // Assign session to an ivar.
-                   // ::uPtr< ::app::VFIOS*>()->SessionID((id)session);
+                   // $$->SessionID((id)session);
                    ]]>
                </Body>
            </Method>
