@@ -17,17 +17,6 @@
                </Require>
 
 
-           <Method Signature="SetSampleBuffer(VFIOS, iOS.AVFoundation.AVCaptureVideoDataOutput)">
-              <Body>
-                <![CDATA[
-                  id delegate_id = (id)$0;
-                  id output_id = $1->Handle();
-                  dispatch_queue_t queue = dispatch_queue_create("myQueue", NULL);
-                  [output_id setSampleBufferDelegate:delegate_id queue:queue];
-                  dispatch_release(queue);
-                ]]>
-              </Body>
-           </Method>
            <Method Signature="GetAVCaptureVideoDataOutput():ObjC.ID">
             <Body>
               <![CDATA[
@@ -75,8 +64,8 @@
                uAutoReleasePool pool;
 
                // Get a CMSampleBuffer's Core Video image buffer for the media data
-               ::CMSampleBufferRef sampleBuffer = (::CMSampleBufferRef)$0;
-               CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+               opaqueCMSampleBuffer *sambuf = (opaqueCMSampleBuffer *)$0;
+               CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sambuf);
                // Lock the base address of the pixel buffer
                CVPixelBufferLockBaseAddress(imageBuffer, 0);
 
@@ -129,13 +118,14 @@
                @{Uno.Graphics.Texture2D:Of(texture).Update(Uno.IntPtr):Call(rawData)};
 
                free(rawData);
-               $$->PostTexture(texture);
                return texture;
               ]]>
             </Body>
+            <Require Entity="Uno.Graphics.Texture2D(Uno.Int2,Uno.Graphics.Format,bool)" />
+            <Require Entity="Uno.Graphics.Texture2D.Update(Uno.IntPtr)" />
            </Method>
 
-           <Method Signature="SetupCaptureSessionImpl(VFIOS)">
+           <Method Signature="SetupCaptureSessionImpl()">
                <Body>
                    <![CDATA[
                    NSError *error = nil;
@@ -196,7 +186,7 @@
                    [session startRunning];
 
                    // Assign session to an ivar.
-                   ::uPtr< ::app::VFIOS*>($0)->SessionID((id)session);
+                   // ::uPtr< ::app::VFIOS*>()->SessionID((id)session);
                    ]]>
                </Body>
            </Method>

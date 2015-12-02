@@ -19,6 +19,7 @@ public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 
 https://developer.apple.com/library/ios/qa/qa1702/_index.html
 
+http://www.ios-developer.net/iphone-ipad-programmer/development/camera/record-video-with-avcapturesession-2
 
 http://stackoverflow.com/questions/12821364/cant-use-dispatch-sync-in-c-class-with-objective-c-code
 

@@ -1,6 +1,7 @@
 #import <AVFoundation/AVFoundation.h>
 #include "-.CaptureWrapper.h"
 #include <app/-.ViewFinder.h>
+#include <app/Uno.Graphics.Texture2D.h>
 
 
 @implementation CaptureWrapper
@@ -8,7 +9,13 @@
     // doing copying to currentBuffer
     NSLog(@"Capture2");
     app::ViewFinder *view = [self ViewFinderInst];
-    view->textureFromSampleBuffer((id)sampleBuffer);
+    opaqueCMSampleBuffer *buf = sampleBuffer;
+    ::app::Uno::Graphics::Texture2D* t2 = view->textureFromSampleBuffer((id)buf);
+    dispatch_async(dispatch_get_main_queue(), ^{
+    //< Add your code here that uses the image >
+        uAutoReleasePool pool;
+        view->PostTexture(t2);
+    });
     // UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
     int r = [self Runs];
     r++;

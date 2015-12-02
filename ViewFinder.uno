@@ -34,11 +34,8 @@ public class ViewFinder : Panel
       textureFromSampleBuffer(null); // striping hack
       PostTexture(null);            // striping hack
       // showImage(null);            // striping hack
-    	var v = new VFIOS();
-    	v.SessionID = null;            // striping hack
       var view = iOS.UIKit.UIApplication._sharedApplication().KeyWindow.RootViewController.View;             // striping hack
-    	SetupCaptureSessionImpl(v);
-    	vfios = v;
+    	SetupCaptureSessionImpl();
       	// SetupCaptureSession();
     }
   }
@@ -64,13 +61,11 @@ public class ViewFinder : Panel
 
   [TargetSpecificImplementation]
   extern(iOS)
-  public void SetupCaptureSessionImpl(VFIOS vf);
+  public void SetupCaptureSessionImpl();
 
   [TargetSpecificImplementation]
   extern(iOS)
-  public void SetSampleBuffer(VFIOS v, iOS.AVFoundation.AVCaptureVideoDataOutput output);
-
-  public VFIOS vfios;
+  public void SetSampleBuffer(iOS.AVFoundation.AVCaptureVideoDataOutput output);
 
   [TargetSpecificImplementation]
   extern(iOS)
@@ -152,10 +147,7 @@ public class ViewFinder : Panel
     var output = new iOS.AVFoundation.AVCaptureVideoDataOutput(output_id);
 
     _session.addOutput(output);
-    var _vfios = new VFIOS();
-    SetSampleBuffer(_vfios, output);
-
-    vfios = _vfios;
+    SetSampleBuffer(output);
 
     // var v = iOS.Foundation.NSDictionary._dictionaryWithObjectForKey();
     /*
@@ -169,7 +161,6 @@ public class ViewFinder : Panel
     // output.setMinFrameDuration(iOS.CoreMedia.Functions.CMTimeMake(1, 15));
     StartSession(_session);
     // _session.startRunning();
-    vfios.Session = _session;
 
   }
 
