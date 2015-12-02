@@ -21,8 +21,8 @@ public class ViewFinder : Panel
     ImageSource = new Fuse.Resources.TextureImageSource();
     Photo.Source = ImageSource;
     this.Children.Add(Photo);
-    Texture = import Texture2D( "Assets/tower1.png" );
-    Texture2 = import Texture2D( "Assets/tower2.png" );
+    // Texture = import Texture2D( "Assets/tower1.png" );
+    // Texture2 = import Texture2D( "Assets/tower2.png" );
     ImageSource.Texture = Texture;
 
   }
@@ -33,7 +33,7 @@ public class ViewFinder : Panel
     if defined(iOS) {
       textureFromSampleBuffer(null); // striping hack
       PostTexture(null);            // striping hack
-      // showImage(null);            // striping hack
+      showImage(null);            // striping hack
       var view = iOS.UIKit.UIApplication._sharedApplication().KeyWindow.RootViewController.View;             // striping hack
     	SetupCaptureSessionImpl();
       	// SetupCaptureSession();
@@ -108,17 +108,7 @@ public class ViewFinder : Panel
   }
   public void SetTexture (Uno.Graphics.Texture2D texture) {
     // Experimental.TextureLoader.TextureLoader.PngByteArrayToTexture2D(new Buffer(data), SetTexture2);
-    if (one == 0) {
-      ImageSource.Texture = Texture2;
-      one = 1;
-    }
-    else if (one == 1) {
-      ImageSource.Texture  = Texture;
-      one = 2;
-    } else {
-      ImageSource.Texture = texture;
-      one = 0;
-    }
+    ImageSource.Texture = texture;
     InvalidateVisual();
   }
 

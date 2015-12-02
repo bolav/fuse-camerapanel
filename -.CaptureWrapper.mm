@@ -11,12 +11,7 @@
     app::ViewFinder *view = [self ViewFinderInst];
     opaqueCMSampleBuffer *buf = sampleBuffer;
     ::app::Uno::Graphics::Texture2D* t2 = view->textureFromSampleBuffer((id)buf);
-    dispatch_async(dispatch_get_main_queue(), ^{
-    //< Add your code here that uses the image >
-        uAutoReleasePool pool;
-        view->PostTexture(t2);
-    });
-    // UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+    view->PostTexture(t2);
     int r = [self Runs];
     r++;
     if (r > 100) {
