@@ -24,7 +24,8 @@
         "Uno.Geometry",
         "Android",
         "Experimental.iOS",
-        "ObjC"
+        "ObjC",
+        "Experimental.TextureLoader"
   ],
   "Includes": [
     "*"

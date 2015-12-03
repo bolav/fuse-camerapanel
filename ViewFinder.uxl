@@ -100,9 +100,8 @@
                UIImage *image = [UIImage imageWithCGImage:quartzImage];
                NSData *imageData = UIImageJPEGRepresentation(image, 0.7f);
                NSString *encodedString = [imageData base64Encoding];
-               NSString *javascript = @"CanvasCamera.capture('data:image/jpeg;base64,";
+               NSString *javascript = @"data:image/jpeg;base64,";
                javascript = [javascript stringByAppendingString:encodedString];
-               javascript = [javascript stringByAppendingString:@"');"];
                $$->PostString(javascript);
 
 

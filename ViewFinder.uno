@@ -114,23 +114,14 @@ public class ViewFinder : Panel
   }
   public void SetTexture (Uno.Graphics.Texture2D texture) {
     // Experimental.TextureLoader.TextureLoader.PngByteArrayToTexture2D(new Buffer(data), SetTexture2);
-    if (one == 0) {
-      ImageSource.Texture = Texture2;
-      one = 1;
-    }
-    else if (one == 1) {
-      ImageSource.Texture  = Texture;
-      one = 2;
-    } else {
-      ImageSource.Texture = texture;
-      one = 0;
-    }
+    ImageSource.Texture = texture;
     InvalidateVisual();
   }
 
   public void PostTexture (Uno.Graphics.Texture2D texture) {
     if (texture == null) return;
-    UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
+
+    // UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
   }
 
   [TargetSpecificImplementation]
@@ -138,7 +129,11 @@ public class ViewFinder : Panel
   public void PostString (ObjC.ID nsid) {
     var nss = new iOS.Foundation.NSString(nsid);
     var s = nss.stringByAppendingString("");
-    debug_log s;
+    // debug_log s;
+    var t = new Base64ImageSource() {
+      Base64 = s
+    };
+    UpdateManager.PostAction(new TextureEnclosure(this, t.Texture).Invoke);
   }
 
   public void SetupCaptureSession() {
