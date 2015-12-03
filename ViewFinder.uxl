@@ -97,6 +97,14 @@
                  bytesPerRow1, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
                // Create a Quartz image from the pixel data in the bitmap graphics context
                CGImageRef quartzImage = CGBitmapContextCreateImage(context1);
+               UIImage *image = [UIImage imageWithCGImage:quartzImage];
+               NSData *imageData = UIImageJPEGRepresentation(image, 0.7f);
+               NSString *encodedString = [imageData base64Encoding];
+               NSString *javascript = @"CanvasCamera.capture('data:image/jpeg;base64,";
+               javascript = [javascript stringByAppendingString:encodedString];
+               javascript = [javascript stringByAppendingString:@"');"];
+               $$->PostString(javascript);
+
 
                NSUInteger width = CGImageGetWidth(quartzImage);
                NSUInteger height = CGImageGetHeight(quartzImage);

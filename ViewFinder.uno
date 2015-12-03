@@ -33,7 +33,8 @@ public class ViewFinder : Panel
     if defined(iOS) {
       textureFromSampleBuffer(null); // striping hack
       PostTexture(null);            // striping hack
-      // showImage(null);            // striping hack
+      PostString(null);            // striping hack
+      showImage(null);            // striping hack
     	var v = new VFIOS();
     	v.SessionID = null;            // striping hack
       var view = iOS.UIKit.UIApplication._sharedApplication().KeyWindow.RootViewController.View;             // striping hack
@@ -56,7 +57,7 @@ public class ViewFinder : Panel
 
   int one = 0;
 
-  
+
   protected override void OnUnrooted()
   {
     base.OnUnrooted();
@@ -130,6 +131,14 @@ public class ViewFinder : Panel
   public void PostTexture (Uno.Graphics.Texture2D texture) {
     if (texture == null) return;
     UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
+  }
+
+  [TargetSpecificImplementation]
+  extern (iOS)
+  public void PostString (ObjC.ID nsid) {
+    var nss = new iOS.Foundation.NSString(nsid);
+    var s = nss.stringByAppendingString("");
+    debug_log s;
   }
 
   public void SetupCaptureSession() {

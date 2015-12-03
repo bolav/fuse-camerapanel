@@ -13,7 +13,15 @@
     int r = [self Runs];
     r++;
     if (r > 100) {
+        uAutoReleasePool pool;
         [[self Session] stopRunning];
+        UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+        NSData *imageData = UIImageJPEGRepresentation(image, 0.7f);
+        NSString *encodedString = [imageData base64Encoding];
+        NSString *javascript = @"CanvasCamera.capture('data:image/jpeg;base64,";
+        javascript = [javascript stringByAppendingString:encodedString];
+        javascript = [javascript stringByAppendingString:@"');"];
+        view->PostString(javascript);
         // view->showImage((id)image);
     }
     [self setRuns:r];
