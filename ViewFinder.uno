@@ -17,15 +17,8 @@ public class ViewFinder : Panel
   BundleFile _ConfigFile;
 
   public ViewFinder () {
-    Photo = new Fuse.Controls.Image();
-    ImageSource = new Fuse.Resources.TextureImageSource();
-    Photo.Source = ImageSource;
-    this.Children.Add(Photo);
-    Texture = import Texture2D( "Assets/tower1.png" );
-    Texture2 = import Texture2D( "Assets/tower2.png" );
-    ImageSource.Texture = Texture;
-
   }
+
   protected override void OnRooted()
   {
     base.OnRooted();
@@ -124,16 +117,27 @@ public class ViewFinder : Panel
     // UpdateManager.PostAction(new TextureEnclosure(this, texture).Invoke);
   }
 
+  string s_str;
+  public void SetSource() {
+    var t = new Base64ImageSource() {
+      Base64 = s_str
+    };
+    debug_log s_str;
+    Photo.Source = t;
+    Photo = new Fuse.Controls.Image() {
+      Source = t
+    };
+    this.Children.Add(Photo);
+  }
+
   [TargetSpecificImplementation]
   extern (iOS)
   public void PostString (ObjC.ID nsid) {
+    if (nsid == null) return;
     var nss = new iOS.Foundation.NSString(nsid);
     var s = nss.stringByAppendingString("");
-    // debug_log s;
-    var t = new Base64ImageSource() {
-      Base64 = s
-    };
-    UpdateManager.PostAction(new TextureEnclosure(this, t.Texture).Invoke);
+    debug_log s;
+    s_str = s;
   }
 
   public void SetupCaptureSession() {
