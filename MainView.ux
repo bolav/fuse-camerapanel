@@ -1,6 +1,5 @@
 <App Theme="Basic">
 	<Panel>
-		<ViewFinder />
+		<CameraStream />
 	</Panel>
 </App>
-
