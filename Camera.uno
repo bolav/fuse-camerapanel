@@ -1,20 +1,22 @@
 using Uno;
 using OpenGL;
 using Uno.Graphics;
+using Uno.Compiler.ExportTargetInterop;
 
+[TargetSpecificImplementationAttribute]
 extern(iOS) class Camera
 {
-  void Start() {
+  public void Start() {
 
   }
-  void Stop() {
+  public void Stop() {
 
   }
-  int2 Size { get; private set; }
-  event EventHandler FrameAvailable;
-  GLTextureHandle Texture { get; private set; }
-  Texture2D VideoTexture { get; private set; }
-  void Update() {
+  public int2 Size { get; private set; }
+  public event EventHandler FrameAvailable;
+  public GLTextureHandle Texture { get; private set; }
+  public VideoTexture VideoTexture { get; private set; }
+  public void Update() {
     return;
   }
 }

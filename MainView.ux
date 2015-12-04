@@ -2,6 +2,8 @@
 <Panel>
 <Style>
 	<CameraStream>
+		<iOS>
+		</iOS>
 	</CameraStream>
 </Style>
 </Panel>
