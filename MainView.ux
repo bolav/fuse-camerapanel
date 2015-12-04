@@ -1,4 +1,10 @@
 <App Theme="Basic">
+<Panel>
+<Style>
+	<CameraStream>
+	</CameraStream>
+</Style>
+</Panel>
 	<Panel>
 		<CameraStream />
 	</Panel>

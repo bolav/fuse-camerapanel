@@ -1,0 +1,7 @@
+<Package>
+<Extensions Backend="CPlusPlus" Condition="iOS">
+       <Type Name="Camera">
+               <Set Source.FileExtension="mm" />
+       </Type>
+</Extensions>
+</Package>
