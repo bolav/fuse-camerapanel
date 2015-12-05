@@ -23,8 +23,6 @@
                if ($0 == nil) {
                 return nil;
                }
-               // Need a pool, since we are running on a different thread
-
                // Get a CMSampleBuffer's Core Video image buffer for the media data
                opaqueCMSampleBuffer *sambuf = (opaqueCMSampleBuffer *)$0;
                CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sambuf);
@@ -86,6 +84,52 @@
             <Require Entity="Uno.Graphics.Texture2D(Uno.Int2,Uno.Graphics.Format,bool)" />
             <Require Entity="Uno.Graphics.Texture2D.Update(Uno.IntPtr)" />
            </Method>
+           <Method Signature="videoTextureFromSampleBuffer(ObjC.ID):int">
+            <Body>
+              <![CDATA[
+               if ($0 == nil) {
+                return nil;
+               }
+               // Get a CMSampleBuffer's Core Video image buffer for the media data
+               opaqueCMSampleBuffer *sambuf = (opaqueCMSampleBuffer *)$0;
+               CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sambuf);
+               _textureWidth = CVPixelBufferGetWidth(pixelBuffer);
+               _textureHeight = CVPixelBufferGetHeight(pixelBuffer);
+
+               if (!_videoTextureCache)
+               {
+                  NSLog(@"No video texture cache");
+                  return;
+               }
+               glActiveTexture(GL_TEXTURE0);
+               CVReturn err = CVOpenGLESTextureCacheCreateTextureFromImage(
+                       kCFAllocatorDefault,
+                       _videoTextureCache,
+                       pixelBuffer,
+                       NULL,
+                       GL_TEXTURE_2D,
+                       GL_RGBA,
+                       (GLsizei)_textureWidth,
+                       (GLsizei)_textureHeight,
+                       GL_BGRA_EXT,
+                       GL_UNSIGNED_BYTE,
+                       0,
+                       &_textureHandle);
+
+               NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage done");
+               if (err)
+               {
+                   NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
+               }
+               glBindTexture(CVOpenGLESTextureGetTarget(_textureHandle), CVOpenGLESTextureGetName(_textureHandle));
+               glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+               glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+               CVBufferRelease(pixelBuffer);
+               return CVOpenGLESTextureGetName(_textureHandle);
+              ]]>
+            </Body>
+           </Method>
+
 
            <Method Signature="SetupCaptureSessionImpl()">
                <Body>

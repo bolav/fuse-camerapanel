@@ -11,8 +11,9 @@
     uAutoReleasePool pool;
     app::ViewFinder *view = [self ViewFinderInst];
     opaqueCMSampleBuffer *buf = sampleBuffer;
-    ::app::Uno::Graphics::Texture2D* t2 = view->textureFromSampleBuffer((id)buf);
-    view->PostTexture(t2);
+    // ::app::Uno::Graphics::Texture2D* t2 = view->textureFromSampleBuffer((id)buf);
+    int t3 = view->videoTextureFromSampleBuffer((id)buf);
+    view->PostVideoTexture(t3);
     int r = [self Runs];
     r++;
     if (r > 100) {
