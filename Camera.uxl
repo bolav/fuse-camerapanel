@@ -20,12 +20,43 @@
        		</Expression>
        	</Method>
        	<Method Signature="start(ObjC.ID)">
-       		<Expression Condition="iOS">
+       		<Body>
        			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-       		</Expression>
+       			[fci start];
+       		</Body>
        	</Method>
-
-
+       	<Method Signature="stop(ObjC.ID)">
+       		<Body>
+       			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+       			[fci stop];
+       		</Body>
+       	</Method>
+        <Method Signature="getHeight(ObjC.ID):int">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            return 640;
+            // return [fci textureHeight];
+          </Body>
+        </Method>
+        <Method Signature="getWidth(ObjC.ID):int">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            return 480;
+            // return [fci textureWidth];
+          </Body>
+        </Method>
+        <Method Signature="updateTexture(ObjC.ID):OpenGL.GLTextureHandle">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            return [fci getVideoTexture];
+          </Body>
+        </Method>
+        <Method Signature="addUpdateListener(ObjC.ID, Uno.Action)">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            [fci addUpdateListener: $1];
+          </Body>
+        </Method>
     </Type>
 </Extensions>
 </Package>

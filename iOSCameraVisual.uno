@@ -14,12 +14,14 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
   protected override void Attach()
   {
+    _camera.Start();
     _camera.FrameAvailable += OnFrameAvailable;
     Fuse.UpdateManager.AddAction(Update);
   }
 
   protected override void Detach()
   {
+    _camera.Stop();
     _camera.FrameAvailable -= OnFrameAvailable;
     Fuse.UpdateManager.RemoveAction(Update);
   }

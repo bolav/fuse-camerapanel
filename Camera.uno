@@ -8,18 +8,40 @@ extern(iOS) class Camera
 {
   ObjC.ID _handle;
 
-  public Camera () {
-    _handle = CameraImpl.allocateCamera();
-  }
-  [TargetSpecificImplementation]
   public void Start() {
+    debug_log("Start");
     CameraImpl.initialize(_handle);
     CameraImpl.start(_handle);
   }
-  public void Stop() {
 
+  public void Stop() {
+    debug_log("Stop");
+    CameraImpl.stop(_handle);
   }
-  public int2 Size { get; private set; }
+
+  public int2 Size {
+    get { return int2(CameraImpl.getWidth(_handle), CameraImpl.getHeight(_handle)); }
+  }
+
+  public GLTextureHandle UpdateTexture() {
+    debug_log("UpdateTexture");
+    return CameraImpl.updateTexture(_handle);
+  }
+
+  void OnFrameAvailable() {
+    debug_log "OnFrameAvailable";
+    var handler = FrameAvailable;
+    var args = new EventArgs();
+    if (handler != null) handler(this, args);
+  }
+
+  public Camera () {
+    debug_log "Camera.ctor";
+    _handle = CameraImpl.allocateCamera();
+    CameraImpl.addUpdateListener(_handle, OnFrameAvailable);
+  }
+
+
   public event EventHandler FrameAvailable;
   public GLTextureHandle Texture { get; private set; }
   public VideoTexture VideoTexture { get; private set; }
@@ -37,43 +59,24 @@ internal class CameraImpl
   public static extern ObjC.ID allocateCamera();
 
   [TargetSpecificImplementation]
-  public static extern void freeVideoState(Uno.IntPtr videoState);
-
-  [TargetSpecificImplementation]
   public static extern void initialize(ObjC.ID camera);
 
   [TargetSpecificImplementation]
-  public static extern double getDuration(Uno.IntPtr videoState);
+  public static extern int getWidth(ObjC.ID camera);
 
   [TargetSpecificImplementation]
-  public static extern double getPosition(Uno.IntPtr videoState);
-
-  [TargetSpecificImplementation]
-  public static extern void setPosition(Uno.IntPtr videoState, double position);
-
-  [TargetSpecificImplementation]
-  public static extern float getVolume(Uno.IntPtr videoState);
-
-  [TargetSpecificImplementation]
-  public static extern void setVolume(Uno.IntPtr videoState, float volume);
-
-  [TargetSpecificImplementation]
-  public static extern int getWidth(Uno.IntPtr videoState);
-
-  [TargetSpecificImplementation]
-  public static extern int getHeight(Uno.IntPtr videoState);
+  public static extern int getHeight(ObjC.ID camera);
 
   [TargetSpecificImplementation]
   public static extern void start(ObjC.ID camera);
 
   [TargetSpecificImplementation]
-  public static extern void pause(Uno.IntPtr videoState);
+  public static extern void stop(ObjC.ID camera);
 
   [TargetSpecificImplementation]
-  public static extern GLTextureHandle updateTexture(Uno.IntPtr videoState);
+  public static extern void addUpdateListener(ObjC.ID camera, Uno.Action action);
 
   [TargetSpecificImplementation]
-  public static extern void setErrorHandler(Uno.IntPtr videoState, Uno.Action errorHandler);
-
+  public static extern GLTextureHandle updateTexture(ObjC.ID camera);
   
 }

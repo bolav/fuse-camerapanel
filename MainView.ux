@@ -2,6 +2,7 @@
 <Panel>
 </Panel>
 	<Panel>
+		<Text Value="Teksten!!!" />
 		<CameraStream>
 			<iOSCameraVisual />
 		</CameraStream>
