@@ -91,6 +91,7 @@ enum
 - (void)addUpdateListener:(uDelegate *)callback
 {
     _callback = callback;
+    uRetainObject(_callback);
 }
 
 
@@ -145,7 +146,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if(_callback != NULL)
     {
         // TODO: How should we do this? Why don't this work?
-        // @{Uno.Action:Of(_callback):Call()};
+        @{Uno.Action:Of(_callback):Call()};
     }
 }
 
