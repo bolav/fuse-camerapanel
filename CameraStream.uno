@@ -1,3 +1,4 @@
 using Fuse.Controls;
 
-public class CameraStream : Panel { }
+public class CameraStream : Panel {
+}

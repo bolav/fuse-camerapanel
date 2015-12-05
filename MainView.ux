@@ -1,13 +1,9 @@
 <App Theme="Basic">
 <Panel>
-<Style>
-	<CameraStream>
-		<iOS>
-		</iOS>
-	</CameraStream>
-</Style>
 </Panel>
 	<Panel>
-		<CameraStream />
+		<CameraStream>
+			<iOSCameraVisual />
+		</CameraStream>
 	</Panel>
 </App>
