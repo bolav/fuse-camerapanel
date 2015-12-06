@@ -126,7 +126,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         0,
         &_textureHandle);
 
-    NSLog(@"CVOpenGLESTextureCacheCreateTextureFromImage done");
     if (err)
     {
         NSLog(@"Error at CVOpenGLESTextureCacheCreateTextureFromImage %d", err);
@@ -147,7 +146,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Call callbackhandler
     if(_callback != NULL)
     {
-        // TODO: How should we do this? Why don't this work?
         @{Uno.Action:Of(_callback):Call()};
     }
 }
