@@ -22,13 +22,13 @@
        	<Method Signature="start(ObjC.ID)">
        		<Body>
        			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-       			[fci start];
+       			[fci startCam];
        		</Body>
        	</Method>
        	<Method Signature="stop(ObjC.ID)">
        		<Body>
        			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-       			[fci stop];
+       			[fci stopCam];
        		</Body>
        	</Method>
         <Method Signature="getHeight(ObjC.ID):int">
@@ -48,7 +48,8 @@
         <Method Signature="updateTexture(ObjC.ID):OpenGL.GLTextureHandle">
           <Body>
             FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-            return [fci getVideoTexture];
+            int t = [fci Texture];
+            return t;
           </Body>
         </Method>
         <Method Signature="addUpdateListener(ObjC.ID, Uno.Action)">

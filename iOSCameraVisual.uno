@@ -14,6 +14,7 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
   protected override void Attach()
   {
+    debug_log "Attach";
     _camera.Start();
     _camera.FrameAvailable += OnFrameAvailable;
     Fuse.UpdateManager.AddAction(Update);
@@ -21,6 +22,7 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
   protected override void Detach()
   {
+    debug_log "Detach";
     _camera.Stop();
     _camera.FrameAvailable -= OnFrameAvailable;
     Fuse.UpdateManager.RemoveAction(Update);
@@ -41,6 +43,8 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
   int2 _sizeCache = int2(0,0);
   void OnFrameAvailable(object sender, EventArgs args)
   {
+    debug_log "OnFrameAvailable";
+
     if (_camera.Size != _sizeCache)
     {
       _sizeCache = _camera.Size;
@@ -81,6 +85,8 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
   protected sealed override void OnDraw(DrawContext dc)
   {
+    debug_log "OnDraw";
+
     var texture = _camera.VideoTexture;
     if (texture == null)
       return;

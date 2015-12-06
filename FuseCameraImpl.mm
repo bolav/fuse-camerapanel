@@ -68,7 +68,7 @@ enum
 }
 
 
-- (void)start
+- (void)startCam
 {
     NSLog(@"mm start");
 
@@ -81,7 +81,7 @@ enum
     [self setupAVCapture];    
 }
 
-- (void)stop
+- (void)stopCam
 {    
     NSLog(@"mm stop");
     [_session stopRunning];
@@ -140,18 +140,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-    CVBufferRelease(pixelBuffer);
+    // CVBufferRelease(pixelBuffer);
     // Set Texture of Camera
+    int _th = CVOpenGLESTextureGetName(_textureHandle);
+    [self setTexture:_th];
     // Call callbackhandler
     if(_callback != NULL)
     {
         // TODO: How should we do this? Why don't this work?
         @{Uno.Action:Of(_callback):Call()};
     }
-}
-
-- (int)getVideoTexture {
-    return CVOpenGLESTextureGetName(_textureHandle);
 }
 
 - (void)setupAVCapture

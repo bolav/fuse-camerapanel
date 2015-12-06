@@ -43,8 +43,12 @@ extern(iOS) class Camera
 
 
   public event EventHandler FrameAvailable;
-  public GLTextureHandle Texture { get; private set; }
-  public VideoTexture VideoTexture { get; private set; }
+  public GLTextureHandle Texture { get {
+    return CameraImpl.updateTexture(_handle);
+  } }
+  public VideoTexture VideoTexture { get {
+    return new VideoTexture(Texture);
+  } }
   public void Update() {
     return;
   }

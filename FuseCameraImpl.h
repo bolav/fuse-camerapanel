@@ -13,4 +13,6 @@
 
 @interface FuseCameraImpl : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
 
+ @property int Texture;
+
 @end
