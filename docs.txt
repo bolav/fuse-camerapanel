@@ -28,6 +28,8 @@ http://stackoverflow.com/questions/24024764/errors-showing-for-oes-opengl-statem
 http://stackoverflow.com/questions/12821364/cant-use-dispatch-sync-in-c-class-with-objective-c-code
 
 
+http://stackoverflow.com/questions/5559652/how-do-i-detect-the-orientation-of-the-device-on-ios
+
 Add to .mm
 
 @implementation Wrapper

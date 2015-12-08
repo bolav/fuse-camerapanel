@@ -1,10 +1,11 @@
 <App Theme="Basic">
-<Panel>
-</Panel>
-	<Panel>
+	<ScrollView>
+	<StackPanel>
 		<Text Value="Teksten!!!" />
 		<CameraStream>
 			<iOSCameraVisual />
 		</CameraStream>
-	</Panel>
+		<Text Value="Underteksten!!!" />
+	</StackPanel>
+</ScrollView>
 </App>

@@ -17,7 +17,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     debug_log "Attach";
     _camera.Start();
     _camera.FrameAvailable += OnFrameAvailable;
-    Fuse.UpdateManager.AddAction(Update);
   }
 
   protected override void Detach()
@@ -25,7 +24,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     debug_log "Detach";
     _camera.Stop();
     _camera.FrameAvailable -= OnFrameAvailable;
-    Fuse.UpdateManager.RemoveAction(Update);
   }
 
   public sealed override float2 GetMarginSize( float2 fillSize, SizeFlags fillSet)
@@ -33,11 +31,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
     return _sizing.ExpandFillSize(GetSize(), fillSize, fillSet);
-  }
-
-  new void Update()
-  {
-    _camera.Update();
   }
 
   int2 _sizeCache = int2(0,0);
@@ -86,7 +79,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     var texture = _camera.VideoTexture;
     if (texture == null)
       return;
-
 /*
     if (Control.StretchMode == StretchMode.Scale9)
       {
@@ -95,7 +87,7 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
     else */
       VideoDrawElement.Impl.
-        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture);
+        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, _camera.Orientation);
   }
 
   class VideoDrawElement
@@ -103,7 +95,7 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     static public VideoDrawElement Impl = new VideoDrawElement();
 
     public void Draw(DrawContext dc, Node element, float2 offset, float2 size,
-      float2 uvPosition, float2 uvSize, VideoTexture tex)
+      float2 uvPosition, float2 uvSize, VideoTexture tex, int rotate)
     {
       draw
       {
@@ -115,7 +107,12 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
         Position: offset;
 
         TexCoord: VertexData * uvSize + uvPosition;
-        TexCoord: float2(prev.X, prev.Y);
+        TexCoord: (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : (rotate == 3) ? float2(prev.X, prev.Y) : float2(1.0f - prev.X, 1.0f - prev.Y);
+        // This is for landscape left - 4
+        // TexCoord: flip ? float2(prev.X, 1.0f - prev.Y) : float2(prev.X, prev.Y);
+
+        // AVCaptureVideoOrientationLandscapeRight - landscaperight - 3
+        // TexCoord: float2(prev.X, prev.Y);
 
         PixelColor: float4(sample(tex, TexCoord).XYZ, 1.0f);
       };

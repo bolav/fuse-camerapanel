@@ -16,6 +16,7 @@
     size_t _textureHeight;
     
     CVOpenGLESTextureRef _textureHandle;
+    int _textureOrientation;
     
     NSString *_sessionPreset;
     
@@ -31,12 +32,27 @@
 
 - (int)textureHeight
 {
-    return _textureHeight;
+    return (int)_textureHeight;
 }
 
 - (int)textureWidth
 {
-    return _textureWidth;
+    return (int)_textureWidth;
+}
+
+- (int)getOrientation
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    return orientation;
+    /*
+    if(orientation == 0) //Default orientation 
+        //UI is in Default (Portrait) -- this is really a just a failsafe. 
+    else if(orientation == UIInterfaceOrientationPortrait)
+        //Do something if the orientation is in Portrait
+    else if(orientation == UIInterfaceOrientationLandscapeLeft)
+        // Do something if Left
+    else if(orientation == UIInterfaceOrientationLandscapeRight)
+    */
 }
 
 
@@ -67,7 +83,6 @@
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer 
        fromConnection:(AVCaptureConnection *)connection
 {
-    NSLog(@"captureOutput");
     if (_textureHandle)
         CFRelease(_textureHandle);
         
@@ -99,6 +114,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         GL_UNSIGNED_BYTE,
         0,
         &_textureHandle);
+
+    // Check orientation of device
+    // Check orientation of frame
+    _textureOrientation = connection.videoOrientation;
+    // NSLog(@"%d", connection.videoOrientation);
+
+    // Rotate frame
+
 
     if (err)
     {

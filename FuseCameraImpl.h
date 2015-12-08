@@ -12,7 +12,12 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface FuseCameraImpl : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
-
- @property int Texture;
-
+ 	- (int) textureHeight;
+ 	- (int) textureWidth;
+ 	- (int) getOrientation;
+ 	- (int) textureHeight;
+ 	- (void)startCam;
+ 	- (void)stopCam;
+ 	- (void)addUpdateListener:(uDelegate *)callback;
+ 	@property int Texture;
 @end

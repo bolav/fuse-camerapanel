@@ -20,11 +20,20 @@ extern(iOS) class Camera
   }
 
   public int2 Size {
-    get { return int2(CameraImpl.getWidth(_handle), CameraImpl.getHeight(_handle)); }
+    get { 
+      var o = Orientation;
+      if (o == 1) {
+        return int2(CameraImpl.getHeight(_handle), CameraImpl.getWidth(_handle));
+      }
+      return int2(CameraImpl.getWidth(_handle), CameraImpl.getHeight(_handle)); 
+    }
+  }
+
+  public int Orientation {
+    get { return CameraImpl.getOrientation(_handle); }
   }
 
   public GLTextureHandle UpdateTexture() {
-    debug_log("UpdateTexture");
     return CameraImpl.updateTexture(_handle);
   }
 
@@ -48,10 +57,8 @@ extern(iOS) class Camera
   public VideoTexture VideoTexture { get {
     return new VideoTexture(Texture);
   } }
-  public void Update() {
-    return;
-  }
-}
+
+ }
 
 [ExportCondition("iOS")]
 [TargetSpecificImplementation]
@@ -69,6 +76,9 @@ internal class CameraImpl
 
   [TargetSpecificImplementation]
   public static extern int getHeight(ObjC.ID camera);
+
+  [TargetSpecificImplementation]
+  public static extern int getOrientation(ObjC.ID camera);
 
   [TargetSpecificImplementation]
   public static extern void start(ObjC.ID camera);

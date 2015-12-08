@@ -34,15 +34,23 @@
         <Method Signature="getHeight(ObjC.ID):int">
           <Body>
             FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-            return 640;
-            // return [fci textureHeight];
+            // return 640;
+            int height = [fci textureHeight];
+            return height;
           </Body>
         </Method>
         <Method Signature="getWidth(ObjC.ID):int">
           <Body>
             FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-            return 480;
-            // return [fci textureWidth];
+            // return 480;
+            int width = [fci textureWidth];
+            return width;
+          </Body>
+        </Method>
+        <Method Signature="getOrientation(ObjC.ID):int">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            return [fci getOrientation];
           </Body>
         </Method>
         <Method Signature="updateTexture(ObjC.ID):OpenGL.GLTextureHandle">
