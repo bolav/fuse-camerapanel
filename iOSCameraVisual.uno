@@ -43,8 +43,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
   int2 _sizeCache = int2(0,0);
   void OnFrameAvailable(object sender, EventArgs args)
   {
-    debug_log "OnFrameAvailable";
-
     if (_camera.Size != _sizeCache)
     {
       _sizeCache = _camera.Size;
@@ -74,7 +72,7 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
     var contentDesiredSize = GetSize();
 
     _scale = _sizing.CalcScale( size, contentDesiredSize );
-    _origin = _sizing.CalcScale( size, contentDesiredSize * _scale );
+    _origin = _sizing.CalcOrigin( size, contentDesiredSize * _scale );
 
     _drawOrigin = _origin;
     _drawSize = contentDesiredSize * _scale;
@@ -85,8 +83,6 @@ public extern (iOS) class iOSCameraVisual : ControlVisual<CameraStream>
 
   protected sealed override void OnDraw(DrawContext dc)
   {
-    debug_log "OnDraw";
-
     var texture = _camera.VideoTexture;
     if (texture == null)
       return;

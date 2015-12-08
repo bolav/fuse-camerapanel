@@ -11,37 +11,9 @@
 #import "FuseCameraImpl.h"
 #import <OpenGLES/ES2/glext.h>
 
-// Uniform index.
-enum
-{
-    UNIFORM_Y,
-    UNIFORM_UV,
-    NUM_UNIFORMS
-};
-GLint uniforms[NUM_UNIFORMS];
-
-// Attribute index.
-enum
-{
-    ATTRIB_VERTEX,
-    ATTRIB_TEXCOORD,
-    NUM_ATTRIBUTES
-};
-
 @interface FuseCameraImpl () {
-    GLuint _program;
-    
-    GLuint _positionVBO;
-    GLuint _texcoordVBO;
-    GLuint _indexVBO;
-    
-    CGFloat _screenWidth;
-    CGFloat _screenHeight;
     size_t _textureWidth;
     size_t _textureHeight;
-    unsigned int _meshFactor;
-    
-    EAGLContext *_context;
     
     CVOpenGLESTextureRef _textureHandle;
     
@@ -72,10 +44,6 @@ enum
 {
     NSLog(@"mm start");
 
-    _screenWidth = 640;
-    _screenHeight = 480;
-
-    _meshFactor = 4;
     _sessionPreset = AVCaptureSessionPreset640x480;        
 
     [self setupAVCapture];    
@@ -100,6 +68,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
     NSLog(@"captureOutput");
+    if (_textureHandle)
+        CFRelease(_textureHandle);
+        
+     if (_videoTextureCache)
+        CVOpenGLESTextureCacheFlush(_videoTextureCache, 0);
+    
     uAutoReleasePool pool; // Do we need this???
 	CVPixelBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     _textureWidth = CVPixelBufferGetWidth(pixelBuffer);

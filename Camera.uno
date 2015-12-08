@@ -29,7 +29,6 @@ extern(iOS) class Camera
   }
 
   void OnFrameAvailable() {
-    debug_log "OnFrameAvailable";
     var handler = FrameAvailable;
     var args = new EventArgs();
     if (handler != null) handler(this, args);
