@@ -1,3 +1,11 @@
+http://stackoverflow.com/questions/1893072/getting-frames-from-video-image-in-android
+
+http://developer.android.com/reference/android/hardware/camera2/package-summary.html
+
+http://code.google.com/p/globetrotter/source/browse/trunk/src/com/ece194/globetrotter/CameraActivity.java
+
+
+
 public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 {
   ImageView = new UIImageView (new CGRect (20, 20, 280, 280));

@@ -2,7 +2,24 @@ using Uno;
 using OpenGL;
 using Uno.Graphics;
 using Uno.Compiler.ExportTargetInterop;
+using Android.Fallbacks;
 
+extern (!iOS && !Android) class Camera
+{
+  public void Start() {}
+  public void Stop() {}
+  public event EventHandler FrameAvailable;
+  public int2 Size { get { return int2(0,0); } }
+  public VideoTexture VideoTexture { get { return null; } }
+  public int Orientation { get { return 0; } }
+}
+[TargetSpecificImplementationAttribute]
+extern(Android) class Camera 
+{
+  public void Start() {
+    var f = new Android_android_hardware_CameraDLRPreviewCallback(null,new Uno.Type(),false,false);
+  }
+}
 [TargetSpecificImplementationAttribute]
 extern(iOS) class Camera
 {
