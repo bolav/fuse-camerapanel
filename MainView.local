@@ -1,0 +1,11 @@
+<App Theme="Basic">
+	<ScrollView>
+	<StackPanel>
+		<Text Value="Teksten!!!" />
+		<CameraStream>
+			<CameraVisual />
+		</CameraStream>
+		<Text Value="Underteksten!!!" />
+	</StackPanel>
+</ScrollView>
+</App>
