@@ -19,10 +19,10 @@
        			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
        		</Expression>
        	</Method>
-       	<Method Signature="start(ObjC.ID)">
+       	<Method Signature="start(ObjC.ID,int)">
        		<Body>
        			FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-       			[fci startCam];
+       			[fci startCam: $1];
        		</Body>
        	</Method>
        	<Method Signature="stop(ObjC.ID)">

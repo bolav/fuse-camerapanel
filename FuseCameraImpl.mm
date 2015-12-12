@@ -56,13 +56,13 @@
 }
 
 
-- (void)startCam
+- (void)startCam:(int)device
 {
     NSLog(@"mm start");
 
     _sessionPreset = AVCaptureSessionPreset640x480;        
 
-    [self setupAVCapture];    
+    [self setupAVCapture:device];
 }
 
 - (void)stopCam
@@ -147,7 +147,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
 }
 
-- (void)setupAVCapture
+- (void)setupAVCapture:(int)devicetype
 {
     NSLog(@"mm setupAVCapture");
 
@@ -172,7 +172,20 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [_session setSessionPreset:_sessionPreset];
     
     //-- Creata a video device and input from that Device.  Add the input to the capture session.
-    AVCaptureDevice * videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevice * videoDevice = nil;
+    if (devicetype == 2) {
+        NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+        for (AVCaptureDevice *device in videoDevices) {
+            if (device.position == AVCaptureDevicePositionBack) {
+                videoDevice = device;
+                break;
+            }
+        }
+    }
+    if ( ! videoDevice) {
+        videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+
     if(videoDevice == nil)
         assert(0);
     

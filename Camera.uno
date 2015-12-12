@@ -12,10 +12,13 @@ extern (!iOS && !Android) class Camera
   public int2 Size { get { return int2(0,0); } }
   public VideoTexture VideoTexture { get { return null; } }
   public int Orientation { get { return 0; } }
+  public CameraFacing Facing { get; set;}
 }
 [TargetSpecificImplementationAttribute]
 extern(Android) class Camera 
 {
+  public CameraFacing Facing { get; set;}
+
   public void Start() {
     var f = new Android_android_hardware_CameraDLRPreviewCallback(null,new Uno.Type(),false,false);
   }
@@ -24,11 +27,12 @@ extern(Android) class Camera
 extern(iOS) class Camera
 {
   ObjC.ID _handle;
+  public CameraFacing Facing { get; set;}
 
   public void Start() {
     debug_log("Start");
     CameraImpl.initialize(_handle);
-    CameraImpl.start(_handle);
+    CameraImpl.start(_handle, (int)Facing);
   }
 
   public void Stop() {
@@ -98,7 +102,7 @@ internal class CameraImpl
   public static extern int getOrientation(ObjC.ID camera);
 
   [TargetSpecificImplementation]
-  public static extern void start(ObjC.ID camera);
+  public static extern void start(ObjC.ID camera, int devicetype);
 
   [TargetSpecificImplementation]
   public static extern void stop(ObjC.ID camera);

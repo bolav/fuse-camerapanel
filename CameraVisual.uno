@@ -4,11 +4,28 @@ using Uno.Graphics;
 using Uno;
 using Fuse.Elements;
 
+public enum CameraFacing
+{
+    Default = 0,
+    Back = 1,
+    Front = 2
+}
+
+
 public class CameraVisual : ControlVisual<CameraStream>
 {
 
   readonly Camera _camera = new Camera();
   readonly SizingContainer _sizing = new SizingContainer();
+
+  public CameraFacing Facing {
+    get {
+      return _camera.Facing;
+    }
+    set {
+      _camera.Facing = value;
+    }
+  }
 
   protected override void Attach()
   {
