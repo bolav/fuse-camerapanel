@@ -4,6 +4,13 @@ using Uno.Graphics;
 using Uno.Compiler.ExportTargetInterop;
 using Android.Fallbacks;
 
+public enum CameraFacing
+{
+    Default = 0,
+    Back = 1,
+    Front = 2
+}
+
 extern (!iOS && !Android) class Camera
 {
   public void Start() {}
@@ -20,7 +27,8 @@ extern(Android) class Camera
   public CameraFacing Facing { get; set;}
 
   public void Start() {
-    var f = new Android_android_hardware_CameraDLRPreviewCallback(null,new Uno.Type(),false,false);
+    // var p = new AndroidPreviewCallback();
+    var f = new AndroidFrameListener();
   }
 }
 [TargetSpecificImplementationAttribute]

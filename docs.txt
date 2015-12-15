@@ -61,3 +61,14 @@ Add to .h
 @end
 
 #endif
+
+
+
+Android:
+
+
+http://www.programcreek.com/java-api-examples/index.php?source_dir=shadercam-master/shadercam/src/main/java/com/androidexperiments/shadercam/gl/CameraRenderer.java
+
+http://www.programcreek.com/java-api-examples/index.php?api=android.graphics.SurfaceTexture.OnFrameAvailableListener
+
+http://stackoverflow.com/questions/12519235/modifying-camera-output-using-surfacetexture-and-opengl

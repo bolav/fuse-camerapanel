@@ -4,14 +4,6 @@ using Uno.Graphics;
 using Uno;
 using Fuse.Elements;
 
-public enum CameraFacing
-{
-    Default = 0,
-    Back = 1,
-    Front = 2
-}
-
-
 public class CameraVisual : ControlVisual<CameraStream>
 {
 
