@@ -94,7 +94,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
     else */
       VideoDrawElement.Impl.
-        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, _camera.Orientation);
+        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, _camera.Rotate);
   }
 
   class VideoDrawElement
@@ -114,7 +114,8 @@ public class CameraVisual : ControlVisual<CameraStream>
         Position: offset;
 
         TexCoord: VertexData * uvSize + uvPosition;
-        TexCoord: (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : (rotate == 3) ? float2(prev.X, prev.Y) : float2(1.0f - prev.X, 1.0f - prev.Y);
+        TexCoord: (rotate == 0) ? float2(prev.X, prev.Y) : (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : float2(1.0f - prev.X, 1.0f - prev.Y);
+        // TexCoord: (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : (rotate == 3) ? float2(prev.X, prev.Y) : float2(1.0f - prev.X, 1.0f - prev.Y);
         // This is for landscape left - 4
         // TexCoord: flip ? float2(prev.X, 1.0f - prev.Y) : float2(prev.X, prev.Y);
 

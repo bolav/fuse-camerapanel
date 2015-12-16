@@ -15,7 +15,7 @@
  	- (int) textureHeight;
  	- (int) textureWidth;
  	- (int) getOrientation;
- 	- (int) textureHeight;
+ 	- (int) getRotation;
  	- (void)startCam:(int)device;
  	- (void)stopCam;
  	- (void)addUpdateListener:(uDelegate *)callback;

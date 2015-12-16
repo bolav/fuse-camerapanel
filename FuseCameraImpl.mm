@@ -55,6 +55,20 @@
     */
 }
 
+- (int)getRotation
+{
+    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+    int i_orientation = (int)orientation;
+    if (i_orientation == _textureOrientation) {
+        return 0;
+    }
+    else if (i_orientation == 1) {
+        return 1;
+    }
+    else {
+        return 2;
+    }
+}
 
 - (void)startCam:(int)device
 {
@@ -75,7 +89,7 @@
 - (void)addUpdateListener:(uDelegate *)callback
 {
     _callback = callback;
-    uRetainObject(_callback);
+    uRetain(_callback);
 }
 
 
@@ -176,7 +190,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     if (devicetype == 2) {
         NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
         for (AVCaptureDevice *device in videoDevices) {
-            if (device.position == AVCaptureDevicePositionBack) {
+            if (device.position == AVCaptureDevicePositionFront) {
                 videoDevice = device;
                 break;
             }

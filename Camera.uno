@@ -50,7 +50,7 @@ extern(iOS) class Camera
 
   public int2 Size {
     get { 
-      var o = Orientation;
+      var o = Rotate;
       if (o == 1) {
         return int2(CameraImpl.getHeight(_handle), CameraImpl.getWidth(_handle));
       }
@@ -60,6 +60,10 @@ extern(iOS) class Camera
 
   public int Orientation {
     get { return CameraImpl.getOrientation(_handle); }
+  }
+
+  public int Rotate {
+    get { return CameraImpl.getRotation(_handle); }
   }
 
   public GLTextureHandle UpdateTexture() {
@@ -108,6 +112,9 @@ internal class CameraImpl
 
   [TargetSpecificImplementation]
   public static extern int getOrientation(ObjC.ID camera);
+
+  [TargetSpecificImplementation]
+  public static extern int getRotation(ObjC.ID camera);
 
   [TargetSpecificImplementation]
   public static extern void start(ObjC.ID camera, int devicetype);

@@ -1,9 +1,9 @@
 <Package>
 <Extensions Backend="CPlusPlus" Condition="iOS">
-	<CopyFile Build.HeaderFile="FuseCameraImpl.h" />
-	<ProcessFile Build.SourceFile="FuseCameraImpl.mm" />
+	<CopyFile HeaderFile="FuseCameraImpl.h" />
+	<ProcessFile SourceFile="FuseCameraImpl.mm" />
     <Type Name="CameraImpl">
-    	<Set Source.FileExtension="mm" />
+    	<Set FileExtension="mm" />
     	<Require Entity="Uno.Action" />
        	<Require Entity="ObjC.Object" />
        	<Require Source.Import="FuseCameraImpl.h" />
@@ -51,6 +51,12 @@
           <Body>
             FuseCameraImpl *fci = (FuseCameraImpl *)$0;
             return [fci getOrientation];
+          </Body>
+        </Method>
+        <Method Signature="getRotation(ObjC.ID):int">
+          <Body>
+            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+            return [fci getRotation];
           </Body>
         </Method>
         <Method Signature="updateTexture(ObjC.ID):OpenGL.GLTextureHandle">
