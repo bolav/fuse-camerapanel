@@ -57,8 +57,6 @@
 
 - (void)startCam:(int)device
 {
-    NSLog(@"mm start");
-
     _sessionPreset = AVCaptureSessionPreset640x480;        
 
     [self setupAVCapture:device];
@@ -66,7 +64,6 @@
 
 - (void)stopCam
 {    
-    NSLog(@"mm stop");
     [_session stopRunning];
     [self tearDownAVCapture];
 }
@@ -148,8 +145,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)setupAVCapture:(int)devicetype
 {
-    NSLog(@"mm setupAVCapture");
-
     //-- Create CVOpenGLESTextureCacheRef for optimal CVImageBufferRef to GLES texture conversion.
     #if COREVIDEO_USE_EAGLCONTEXT_CLASS_IN_API
     CVReturn err = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault, NULL, [EAGLContext currentContext], NULL, &(_videoTextureCache));
