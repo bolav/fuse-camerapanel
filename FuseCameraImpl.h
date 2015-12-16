@@ -14,7 +14,6 @@
 @interface FuseCameraImpl : NSObject <AVCaptureVideoDataOutputSampleBufferDelegate>
  	- (int) textureHeight;
  	- (int) textureWidth;
- 	- (int) getOrientation;
  	- (int) getRotation;
  	- (void)startCam:(int)device;
  	- (void)stopCam;

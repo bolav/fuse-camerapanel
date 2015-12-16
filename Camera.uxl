@@ -47,12 +47,6 @@
             return width;
           </Body>
         </Method>
-        <Method Signature="getOrientation(ObjC.ID):int">
-          <Body>
-            FuseCameraImpl *fci = (FuseCameraImpl *)$0;
-            return [fci getOrientation];
-          </Body>
-        </Method>
         <Method Signature="getRotation(ObjC.ID):int">
           <Body>
             FuseCameraImpl *fci = (FuseCameraImpl *)$0;

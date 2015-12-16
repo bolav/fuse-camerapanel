@@ -58,10 +58,6 @@ extern(iOS) class Camera
     }
   }
 
-  public int Orientation {
-    get { return CameraImpl.getOrientation(_handle); }
-  }
-
   public int Rotate {
     get { return CameraImpl.getRotation(_handle); }
   }
@@ -109,9 +105,6 @@ internal class CameraImpl
 
   [TargetSpecificImplementation]
   public static extern int getHeight(ObjC.ID camera);
-
-  [TargetSpecificImplementation]
-  public static extern int getOrientation(ObjC.ID camera);
 
   [TargetSpecificImplementation]
   public static extern int getRotation(ObjC.ID camera);

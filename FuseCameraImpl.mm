@@ -40,21 +40,6 @@
     return (int)_textureWidth;
 }
 
-- (int)getOrientation
-{
-    UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-    return orientation;
-    /*
-    if(orientation == 0) //Default orientation 
-        //UI is in Default (Portrait) -- this is really a just a failsafe. 
-    else if(orientation == UIInterfaceOrientationPortrait)
-        //Do something if the orientation is in Portrait
-    else if(orientation == UIInterfaceOrientationLandscapeLeft)
-        // Do something if Left
-    else if(orientation == UIInterfaceOrientationLandscapeRight)
-    */
-}
-
 - (int)getRotation
 {
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;

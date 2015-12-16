@@ -115,12 +115,6 @@ public class CameraVisual : ControlVisual<CameraStream>
 
         TexCoord: VertexData * uvSize + uvPosition;
         TexCoord: (rotate == 0) ? float2(prev.X, prev.Y) : (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : float2(1.0f - prev.X, 1.0f - prev.Y);
-        // TexCoord: (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : (rotate == 3) ? float2(prev.X, prev.Y) : float2(1.0f - prev.X, 1.0f - prev.Y);
-        // This is for landscape left - 4
-        // TexCoord: flip ? float2(prev.X, 1.0f - prev.Y) : float2(prev.X, prev.Y);
-
-        // AVCaptureVideoOrientationLandscapeRight - landscaperight - 3
-        // TexCoord: float2(prev.X, prev.Y);
 
         PixelColor: float4(sample(tex, TexCoord).XYZ, 1.0f);
       };
