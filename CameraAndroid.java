@@ -77,8 +77,6 @@ public class CameraAndroid {
     }
 
     int result;
-    android.util.Log.d("Tension", "Rotation: " + degrees);
-    android.util.Log.d("Tension", "Orientation: " + info.orientation);
     if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
         result = (info.orientation + degrees) % 360;
         result = (360 - result) % 360;  // compensate the mirror
