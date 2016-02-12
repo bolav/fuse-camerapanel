@@ -33,11 +33,11 @@ public class CameraVisual : ControlVisual<CameraStream>
     _camera.FrameAvailable -= OnFrameAvailable;
   }
 
-  public sealed override float2 GetMarginSize( float2 fillSize, SizeFlags fillSet)
+  public sealed override float2 GetMarginSize(LayoutParams layoutParams)
   {
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
-    return _sizing.ExpandFillSize(GetSize(), fillSize, fillSet);
+    return _sizing.ExpandFillSize(GetSize(), layoutParams);
   }
 
   int2 _sizeCache = int2(0,0);
@@ -62,9 +62,9 @@ public class CameraVisual : ControlVisual<CameraStream>
   float2 _drawOrigin;
   float2 _drawSize;
   float4 _uvClip;
-  protected sealed override float2 OnArrangeMarginBox(float2 position, float2 availableSize, SizeFlags fillSet)
+  protected sealed override float2 OnArrangeMarginBox(float2 position, LayoutParams lp)
   {
-    var size = base.OnArrangeMarginBox(position, availableSize, fillSet);
+    var size = base.OnArrangeMarginBox(position, lp);
 
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
@@ -163,7 +163,7 @@ class SizingContainer
       align = a;
       return true;
     }
-    
+
     public bool SetStretchSizing( StretchSizing ss )
     {
       if (ss == stretchSizing)
@@ -195,12 +195,12 @@ class SizingContainer
             return float2(0);
           return float2(pixelSize.X,pixelSize.Y) / absoluteZoom;
         }
-          
+
         case StretchMode.PointPrefer:
         {
           if (pixelSize.X == 0 || pixelSize.Y == 0)
             return float2(0);
-            
+
           var exact = float2(pixelSize.X,pixelSize.Y) / absoluteZoom;
           var scale = size / exact;
           if (scale.X  > 0.75 && scale.X < 1.5)
@@ -216,21 +216,21 @@ class SizingContainer
           */
           break;
         }
-          
+
         default:
           break;
       }
-      
+
       if (!snapToPixels)
         return size;
       return SnapSize(size);
     }
-    
+
     float2 SnapSize( float2 sz )
     {
       return Math.Round(sz* absoluteZoom) / absoluteZoom;
     }
-    
+
     float2 CalcScale( float2 availableSize, float2 desiredSize,
       bool autoWidth, bool autoHeight )
     {
@@ -240,7 +240,7 @@ class SizingContainer
 
       var scale = float2(1);
 
-      if (autoWidth && autoHeight && !(stretchMode == StretchMode.PointPrecise || 
+      if (autoWidth && autoHeight && !(stretchMode == StretchMode.PointPrecise ||
         stretchMode == StretchMode.PixelPrecise ||
         stretchMode == StretchMode.PointPrefer) )
       {
@@ -402,12 +402,11 @@ class SizingContainer
       return float4( tl.X, tl.Y, br.X, br.Y );
     }
 
-    public float2 ExpandFillSize( float2 size, float2 fillSize, SizeFlags fillSet )
+    public float2 ExpandFillSize( float2 size, LayoutParams layoutParams )
     {
-      bool autoWidth = !fillSet.HasFlag(SizeFlags.X);
-      bool autoHeight = !fillSet.HasFlag(SizeFlags.Y);
-      var scale = CalcScale( fillSize, size, autoWidth, autoHeight );
+      bool autoWidth = !layoutParams.HasX;
+      bool autoHeight = !layoutParams.HasY;
+      var scale = CalcScale( layoutParams.Size, size, autoWidth, autoHeight );
       return scale * size;
     }
   }
-
