@@ -93,11 +93,6 @@ public class CameraAndroid {
     listener = onFrameAvailableListener;
   }
 
-  public void updateTexImage()
-  {
-    surfaceTexture.updateTexImage();
-  }
-
   public int getWidth()
   {
     return size.width;
@@ -115,5 +110,10 @@ public class CameraAndroid {
     surfaceTexture.release();
     surfaceTexture = null;
     camera = null;
+  }
+
+  public boolean HasSurfaceTexture()
+  {
+    return surfaceTexture != null;
   }
 }

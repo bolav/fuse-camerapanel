@@ -37,8 +37,11 @@ extern(Android) class Camera
 
     cameraAndroid.setOnFrameAvailableListener(new android.graphics.SurfaceTexture.OnFrameAvailableListener() {
       public void onFrameAvailable(android.graphics.SurfaceTexture surfaceTexture) {
-        cameraAndroid.updateTexImage();
-        @{Camera:Of(_this).OnFrameAvailable():Call()};
+        if(cameraAndroid.HasSurfaceTexture())
+        {
+          surfaceTexture.updateTexImage();
+          @{Camera:Of(_this).OnFrameAvailable():Call()};
+        }
       }
     });
 
