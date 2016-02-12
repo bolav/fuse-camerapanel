@@ -2,6 +2,7 @@ using Uno;
 using Uno.Graphics;
 using Uno.Compiler.ExportTargetInterop;
 using OpenGL;
+using Android.android.app;
 
 [TargetSpecificImplementationAttribute]
 extern(Android) class Camera
@@ -25,11 +26,12 @@ extern(Android) class Camera
 
   public void Start()
   {
-    StartForeign((int)_textureHandle);
+    Activity a = Activity.GetAppActivity();
+    StartForeign(a, (int)_textureHandle);
   }
 
   [Foreign(Language.Java)]
-  public void StartForeign(int textureHandle)
+  public void StartForeign(Java.Object a, int textureHandle)
   @{
     final com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
 
@@ -40,7 +42,8 @@ extern(Android) class Camera
       }
     });
 
-    cameraAndroid.start(textureHandle);
+    android.app.Activity activity = (android.app.Activity)a;
+    cameraAndroid.start(activity.getWindowManager().getDefaultDisplay().getRotation(), textureHandle);
   @}
 
   public void OnFrameAvailable()
@@ -56,9 +59,29 @@ extern(Android) class Camera
     cameraAndroid.stop();
   @}
 
+  [Foreign(Language.Java)]
+  public int GetWidth()
+  @{
+    com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
+    return cameraAndroid.getWidth();
+  @}
+
+  [Foreign(Language.Java)]
+  public int GetHeight()
+  @{
+    com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
+    return cameraAndroid.getHeight();
+  @}
+
   public event EventHandler FrameAvailable;
 
-  public int2 Size { get { return int2(352, 288); } }
+  public int2 Size
+  {
+    get
+    {
+      return int2(GetHeight(), GetWidth());
+    }
+  }
 
   public VideoTexture VideoTexture
   {
@@ -66,5 +89,5 @@ extern(Android) class Camera
     private set;
   }
 
-  public int Rotate { get { return 0; } }
+  public int Rotate { get { return 1; } }
 }
