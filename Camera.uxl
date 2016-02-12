@@ -1,4 +1,7 @@
 <Package>
+﻿<Extensions Backend="CPlusPlus" Condition="Android">
+	<Require AndroidManifest.Permission="android.permission.CAMERA" />
+</Extensions>
 <Extensions Backend="CPlusPlus" Condition="iOS">
 	<CopyFile HeaderFile="FuseCameraImpl.h" />
 	<ProcessFile SourceFile="FuseCameraImpl.mm" />
