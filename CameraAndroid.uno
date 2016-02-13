@@ -89,18 +89,31 @@ public extern(Android) class Camera
   [Foreign(Language.Java)]
   void TakePictureInternal()
   @{
-    com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
+    final com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
     try {
       cameraAndroid.takePictureJpeg(new android.hardware.Camera.PictureCallback() {
         public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
-          java.io.FileOutputStream outStream = null;
+          java.io.FileOutputStream outStream = null;          
           try {
-            java.io.File storageDir = @(Activity.Package).@(Activity.Name).GetRootActivity().getExternalFilesDir(null);
+            android.app.Activity activity = @(Activity.Package).@(Activity.Name).GetRootActivity();
+
+            int angleToRotate = cameraAndroid.getRotationAngle(activity, 1);
+            // Solve image inverting
+            angleToRotate += 180;
+
+            android.graphics.Bitmap originalImg = android.graphics.BitmapFactory.decodeByteArray(data, 0, data.length);
+            android.graphics.Bitmap rotatedImg = cameraAndroid.rotate(originalImg, angleToRotate, true);            
+
+            java.io.File storageDir = activity.getExternalFilesDir(null);
             java.io.File destination = java.io.File.createTempFile("JPEG_", ".jpg", storageDir);
             destination.deleteOnExit();
             outStream = new java.io.FileOutputStream(destination);
-            outStream.write(data);
+
+            rotatedImg.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, outStream);
+            outStream.flush();
             outStream.close();
+            originalImg.recycle();
+            rotatedImg.recycle();
 
             @{Camera:Of(_this).OnTakePictureSuccess(string):Call(destination.getAbsolutePath())};
           } catch (Exception e) {
@@ -148,7 +161,7 @@ public extern(Android) class Camera
     private set;
   }
 
-  public int Rotate { get { return 1; } }
+  public int Rotate { get { return 3; } }
 }
 
 class PictureResult

@@ -119,7 +119,13 @@ public class CameraVisual : ControlVisual<CameraStream>
         Position: offset;
 
         TexCoord: VertexData * uvSize + uvPosition;
-        TexCoord: (rotate == 0) ? float2(prev.X, prev.Y) : (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : float2(1.0f - prev.X, 1.0f - prev.Y);
+        TexCoord: (rotate == 0) 
+          ? float2(prev.X, prev.Y) 
+          : (rotate == 1) 
+          ? float2(prev.Y, 1.0f - prev.X) 
+          : (rotate == 2) 
+          ? float2(1.0f - prev.X, 1.0f - prev.Y) 
+          : float2(1.0f - prev.Y, 1.0f - prev.X);
 
         PixelColor: float4(sample(tex, TexCoord).XYZ, 1.0f);
       };
@@ -140,7 +146,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
 class SizingContainer
   {
-    public StretchMode stretchMode = StretchMode.Uniform;
+    public StretchMode stretchMode = StretchMode.UniformToFill;
     public StretchDirection stretchDirection = StretchDirection.Both;
     public Alignment align = Alignment.Center;
     public StretchSizing stretchSizing = StretchSizing.Natural;
