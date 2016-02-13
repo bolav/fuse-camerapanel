@@ -7,16 +7,22 @@ using Uno.IO;
 
 public class CameraExtended : NativeModule
 {
-  public CameraVisual Camera { get; set; }
+  public Camera Camera { get; set; }
   public CameraExtended()
   {
     AddMember(new NativePromise<PictureResult, Fuse.Scripting.Object>("takePicture", TakePicture, Converter));
+    AddMember(new NativeFunction("refreshCamera", (NativeCallback)this.RefreshCamera));
   }
 
   Future<PictureResult> TakePicture(object[] args)
   {
-    debug_log "Came here";
     return Camera.TakePicture();
+  }
+
+  object RefreshCamera(Context c, object[] args)
+  {
+    Camera.RefreshCamera();
+    return null;
   }
 
   Fuse.Scripting.Object Converter(Context context, PictureResult result)

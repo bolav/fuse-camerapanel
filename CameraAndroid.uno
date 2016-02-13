@@ -6,7 +6,7 @@ using OpenGL;
 using Android.android.app;
 
 [TargetSpecificImplementationAttribute]
-extern(Android) class Camera
+public extern(Android) class Camera
 {
   public CameraFacing Facing { get; set;}
   public readonly Java.Object Handle;
@@ -123,6 +123,14 @@ extern(Android) class Camera
   {
     _mutableTakePictureShit.OnSuccess(path);
   }
+
+  [Foreign(Language.Java)]
+  public void RefreshCamera()
+  @{
+    //Call to start preview of the camera again.
+    com.fuse.camerapanel.CameraAndroid cameraAndroid = (com.fuse.camerapanel.CameraAndroid)@{Camera:Of(_this).Handle:Get()};
+    cameraAndroid.refreshCamera();
+  @}
 
   public event EventHandler FrameAvailable;
 

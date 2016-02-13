@@ -11,13 +11,14 @@ public enum CameraFacing
     Front = 2
 }
 
-extern (!iOS && !Android) class Camera
+public extern (!iOS && !Android) class Camera
 {
   public Promise<PictureResult> TakePicture() {
     return new Promise<PictureResult>();
   }
   public void Start() {}
   public void Stop() {}
+  public void RefreshCamera() {}
   public event EventHandler FrameAvailable;
   public int2 Size { get { return int2(0,0); } }
   public VideoTexture VideoTexture { get { return null; } }
@@ -26,7 +27,7 @@ extern (!iOS && !Android) class Camera
 }
 
 [TargetSpecificImplementationAttribute]
-extern(iOS) class Camera
+public extern(iOS) class Camera
 {
   ObjC.ID _handle;
   public CameraFacing Facing { get; set;}
@@ -41,6 +42,8 @@ extern(iOS) class Camera
     debug_log("Stop");
     CameraImpl.stop(_handle);
   }
+
+  public void RefreshCamera() {}
 
   public Promise<PictureResult> TakePicture() {
     var p = new Promise<PictureResult>();

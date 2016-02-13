@@ -7,31 +7,30 @@ using Uno.Threading;
 
 public class CameraVisual : ControlVisual<CameraStream>
 {
-
-  readonly Camera _camera = new Camera();
+  public Camera Camera { get; set; }
   readonly SizingContainer _sizing = new SizingContainer();
 
   public CameraFacing Facing {
     get {
-      return _camera.Facing;
+      return Camera.Facing;
     }
     set {
-      _camera.Facing = value;
+      Camera.Facing = value;
     }
   }
 
   protected override void Attach()
   {
     debug_log "Attach";
-    _camera.Start();
-    _camera.FrameAvailable += OnFrameAvailable;
+    Camera.Start();
+    Camera.FrameAvailable += OnFrameAvailable;
   }
 
   protected override void Detach()
   {
     debug_log "Detach";
-    _camera.Stop();
-    _camera.FrameAvailable -= OnFrameAvailable;
+    Camera.Stop();
+    Camera.FrameAvailable -= OnFrameAvailable;
   }
 
   public sealed override float2 GetMarginSize(LayoutParams layoutParams)
@@ -43,15 +42,15 @@ public class CameraVisual : ControlVisual<CameraStream>
 
   public Promise<PictureResult> TakePicture()
   {
-    return _camera.TakePicture();
+    return Camera.TakePicture();
   }
 
   int2 _sizeCache = int2(0,0);
   void OnFrameAvailable(object sender, EventArgs args)
   {
-    if (_camera.Size != _sizeCache)
+    if (Camera.Size != _sizeCache)
     {
-      _sizeCache = _camera.Size;
+      _sizeCache = Camera.Size;
       InvalidateLayout();
     }
     InvalidateVisual();
@@ -60,7 +59,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
   float2 GetSize()
   {
-    return (float2)_camera.Size;
+    return (float2)Camera.Size;
   }
 
   float2 _origin;
@@ -89,7 +88,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
   protected sealed override void OnDraw(DrawContext dc)
   {
-    var texture = _camera.VideoTexture;
+    var texture = Camera.VideoTexture;
     if (texture == null)
       return;
 /*
@@ -100,7 +99,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
     else */
       VideoDrawElement.Impl.
-        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, _camera.Rotate);
+        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, Camera.Rotate);
   }
 
   class VideoDrawElement

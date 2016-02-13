@@ -31,6 +31,10 @@ public class CameraAndroid {
 		camera.takePicture(null, null, jpegCallback);
 	}
 
+  public void refreshCamera() {    
+    camera.startPreview();
+  }
+
   public void start(int rotation, int textureHandle)
   {
     try {
