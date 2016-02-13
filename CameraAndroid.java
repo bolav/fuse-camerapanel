@@ -26,9 +26,9 @@ public class CameraAndroid {
   OnFrameAvailableListener listener;
   Camera.Size size;
 
-	public void captureImage(View v) throws IOException {
+	public void takePictureJpeg(PictureCallback jpegCallback) throws IOException {
 		//take the picture
-		//camera.takePicture(null, null, jpegCallback);
+		camera.takePicture(null, null, jpegCallback);
 	}
 
   public void start(int rotation, int textureHandle)
@@ -101,13 +101,21 @@ public class CameraAndroid {
     return size.height;
   }
 
-  public void stop() {
-    // stop preview and release camera
-    camera.stopPreview();
-    camera.release();
-    surfaceTexture.release();
-    surfaceTexture = null;
-    camera = null;
+  public void stop() 
+  {
+    if(camera != null)
+    {
+      // stop preview and release camera
+      camera.stopPreview();
+      camera.release();
+      camera = null;
+    }    
+
+    if(surfaceTexture != null)
+    {
+      surfaceTexture.release();
+      surfaceTexture = null;    
+    }
   }
 
   public boolean HasSurfaceTexture()

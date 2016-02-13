@@ -3,6 +3,7 @@ using Fuse;
 using Uno.Graphics;
 using Uno;
 using Fuse.Elements;
+using Uno.Threading;
 
 public class CameraVisual : ControlVisual<CameraStream>
 {
@@ -38,6 +39,11 @@ public class CameraVisual : ControlVisual<CameraStream>
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
     return _sizing.ExpandFillSize(GetSize(), layoutParams);
+  }
+
+  public Promise<PictureResult> TakePicture()
+  {
+    return _camera.TakePicture();
   }
 
   int2 _sizeCache = int2(0,0);

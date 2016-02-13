@@ -1,6 +1,7 @@
 using Uno;
 using OpenGL;
 using Uno.Graphics;
+using Uno.Threading;
 using Uno.Compiler.ExportTargetInterop;
 
 public enum CameraFacing
@@ -12,6 +13,9 @@ public enum CameraFacing
 
 extern (!iOS && !Android) class Camera
 {
+  public Promise<PictureResult> TakePicture() {
+    return new Promise<PictureResult>();
+  }
   public void Start() {}
   public void Stop() {}
   public event EventHandler FrameAvailable;
@@ -36,6 +40,12 @@ extern(iOS) class Camera
   public void Stop() {
     debug_log("Stop");
     CameraImpl.stop(_handle);
+  }
+
+  public Promise<PictureResult> TakePicture() {
+    var p = new Promise<PictureResult>();
+    p.Resolve(new PictureResult("test.jpeg"));
+    return p;
   }
 
   public int2 Size {
