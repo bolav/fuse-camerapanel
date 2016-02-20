@@ -109,7 +109,7 @@ public extern(Android) class Camera
             destination.deleteOnExit();
             outStream = new java.io.FileOutputStream(destination);
 
-            rotatedImg.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, outStream);
+            rotatedImg.compress(android.graphics.Bitmap.CompressFormat.JPEG, 80, outStream);
             outStream.flush();
             outStream.close();
             originalImg.recycle();

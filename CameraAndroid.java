@@ -54,7 +54,7 @@ public class CameraAndroid {
     size = largestSupportedSize;
     param.setPictureSize(largestSupportedSize.width, largestSupportedSize.height);
 		param.setPreviewSize(largestSupportedSize.width, largestSupportedSize.height);
-    param.setJpegQuality(50);
+    param.setJpegQuality(100);
 		camera.setParameters(param);
 
 		try {
