@@ -32,6 +32,13 @@ extern(Android) class Camera
     // var p = new AndroidPreviewCallback();
     var f = new AndroidFrameListener();
   }
+  public event EventHandler FrameAvailable;
+  public void Stop() {}
+  public int Rotate { get { return 0; } }
+  public int2 Size { get { return int2(0,0); } }
+  public VideoTexture VideoTexture { get { return null; } }
+
+
 }
 [TargetSpecificImplementationAttribute]
 extern(iOS) class Camera
