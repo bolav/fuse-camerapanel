@@ -20,6 +20,8 @@ extern (!iOS && !Android) class Camera
   public VideoTexture VideoTexture { get { return null; } }
   public int Orientation { get { return 0; } }
   public CameraFacing Facing { get; set;}
+  public int Rotate { get { return 0; } }
+
 }
 [TargetSpecificImplementationAttribute]
 extern(Android) class Camera 
