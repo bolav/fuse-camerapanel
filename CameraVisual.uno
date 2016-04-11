@@ -3,49 +3,54 @@ using Fuse;
 using Uno.Graphics;
 using Uno;
 using Fuse.Elements;
+using Uno.Threading;
 
 public class CameraVisual : ControlVisual<CameraStream>
 {
-
-  readonly Camera _camera = new Camera();
+  public Camera Camera { get; set; }
   readonly SizingContainer _sizing = new SizingContainer();
 
   public CameraFacing Facing {
     get {
-      return _camera.Facing;
+      return Camera.Facing;
     }
     set {
-      _camera.Facing = value;
+      Camera.Facing = value;
     }
   }
 
   protected override void Attach()
   {
     debug_log "Attach";
-    _camera.Start();
-    _camera.FrameAvailable += OnFrameAvailable;
+    Camera.Start();
+    Camera.FrameAvailable += OnFrameAvailable;
   }
 
   protected override void Detach()
   {
     debug_log "Detach";
-    _camera.Stop();
-    _camera.FrameAvailable -= OnFrameAvailable;
+    Camera.Stop();
+    Camera.FrameAvailable -= OnFrameAvailable;
   }
 
-  public sealed override float2 GetMarginSize( LayoutParams lp)
+  public sealed override float2 GetMarginSize(LayoutParams layoutParams)
   {
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
-    return _sizing.ExpandFillSize(GetSize(), lp);
+    return _sizing.ExpandFillSize(GetSize(), layoutParams);
+  }
+
+  public Promise<PictureResult> TakePicture()
+  {
+    return Camera.TakePicture();
   }
 
   int2 _sizeCache = int2(0,0);
   void OnFrameAvailable(object sender, EventArgs args)
   {
-    if (_camera.Size != _sizeCache)
+    if (Camera.Size != _sizeCache)
     {
-      _sizeCache = _camera.Size;
+      _sizeCache = Camera.Size;
       InvalidateLayout();
     }
     InvalidateVisual();
@@ -54,7 +59,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
   float2 GetSize()
   {
-    return (float2)_camera.Size;
+    return (float2)Camera.Size;
   }
 
   float2 _origin;
@@ -83,7 +88,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
   protected sealed override void OnDraw(DrawContext dc)
   {
-    var texture = _camera.VideoTexture;
+    var texture = Camera.VideoTexture;
     if (texture == null)
       return;
 /*
@@ -94,7 +99,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
     else */
       VideoDrawElement.Impl.
-        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, _camera.Rotate);
+        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, Camera.Rotate);
   }
 
   class VideoDrawElement
@@ -114,7 +119,13 @@ public class CameraVisual : ControlVisual<CameraStream>
         Position: offset;
 
         TexCoord: VertexData * uvSize + uvPosition;
-        TexCoord: (rotate == 0) ? float2(prev.X, prev.Y) : (rotate == 1) ? float2(prev.Y, 1.0f - prev.X) : float2(1.0f - prev.X, 1.0f - prev.Y);
+        TexCoord: (rotate == 0) 
+          ? float2(prev.X, prev.Y) 
+          : (rotate == 1) 
+          ? float2(prev.Y, 1.0f - prev.X) 
+          : (rotate == 2) 
+          ? float2(1.0f - prev.X, 1.0f - prev.Y) 
+          : float2(1.0f - prev.Y, 1.0f - prev.X);
 
         PixelColor: float4(sample(tex, TexCoord).XYZ, 1.0f);
       };
@@ -135,7 +146,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
 class SizingContainer
   {
-    public StretchMode stretchMode = StretchMode.Uniform;
+    public StretchMode stretchMode = StretchMode.UniformToFill;
     public StretchDirection stretchDirection = StretchDirection.Both;
     public Alignment align = Alignment.Center;
     public StretchSizing stretchSizing = StretchSizing.Natural;
@@ -163,7 +174,7 @@ class SizingContainer
       align = a;
       return true;
     }
-    
+
     public bool SetStretchSizing( StretchSizing ss )
     {
       if (ss == stretchSizing)
@@ -195,12 +206,12 @@ class SizingContainer
             return float2(0);
           return float2(pixelSize.X,pixelSize.Y) / absoluteZoom;
         }
-          
+
         case StretchMode.PointPrefer:
         {
           if (pixelSize.X == 0 || pixelSize.Y == 0)
             return float2(0);
-            
+
           var exact = float2(pixelSize.X,pixelSize.Y) / absoluteZoom;
           var scale = size / exact;
           if (scale.X  > 0.75 && scale.X < 1.5)
@@ -216,21 +227,21 @@ class SizingContainer
           */
           break;
         }
-          
+
         default:
           break;
       }
-      
+
       if (!snapToPixels)
         return size;
       return SnapSize(size);
     }
-    
+
     float2 SnapSize( float2 sz )
     {
       return Math.Round(sz* absoluteZoom) / absoluteZoom;
     }
-    
+
     float2 CalcScale( float2 availableSize, float2 desiredSize,
       bool autoWidth, bool autoHeight )
     {
@@ -240,7 +251,7 @@ class SizingContainer
 
       var scale = float2(1);
 
-      if (autoWidth && autoHeight && !(stretchMode == StretchMode.PointPrecise || 
+      if (autoWidth && autoHeight && !(stretchMode == StretchMode.PointPrecise ||
         stretchMode == StretchMode.PixelPrecise ||
         stretchMode == StretchMode.PointPrefer) )
       {
@@ -402,12 +413,11 @@ class SizingContainer
       return float4( tl.X, tl.Y, br.X, br.Y );
     }
 
-    public float2 ExpandFillSize( float2 size, LayoutParams lp )
+    public float2 ExpandFillSize( float2 size, LayoutParams layoutParams )
     {
-      bool autoWidth = !lp.HasX;
-      bool autoHeight = !lp.HasY;
-      var scale = CalcScale( lp.Size, size, autoWidth, autoHeight );
+      bool autoWidth = !layoutParams.HasX;
+      bool autoHeight = !layoutParams.HasY;
+      var scale = CalcScale( layoutParams.Size, size, autoWidth, autoHeight );
       return scale * size;
     }
   }
-
