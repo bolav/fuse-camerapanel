@@ -33,11 +33,11 @@ public class CameraVisual : ControlVisual<CameraStream>
     _camera.FrameAvailable -= OnFrameAvailable;
   }
 
-  public sealed override float2 GetMarginSize( float2 fillSize, SizeFlags fillSet)
+  public sealed override float2 GetMarginSize( LayoutParams lp)
   {
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
-    return _sizing.ExpandFillSize(GetSize(), fillSize, fillSet);
+    return _sizing.ExpandFillSize(GetSize(), lp);
   }
 
   int2 _sizeCache = int2(0,0);
@@ -62,9 +62,9 @@ public class CameraVisual : ControlVisual<CameraStream>
   float2 _drawOrigin;
   float2 _drawSize;
   float4 _uvClip;
-  protected sealed override float2 OnArrangeMarginBox(float2 position, float2 availableSize, SizeFlags fillSet)
+  protected sealed override float2 OnArrangeMarginBox(float2 position, LayoutParams lp)
   {
-    var size = base.OnArrangeMarginBox(position, availableSize, fillSet);
+    var size = base.OnArrangeMarginBox(position, lp);
 
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
@@ -402,11 +402,11 @@ class SizingContainer
       return float4( tl.X, tl.Y, br.X, br.Y );
     }
 
-    public float2 ExpandFillSize( float2 size, float2 fillSize, SizeFlags fillSet )
+    public float2 ExpandFillSize( float2 size, LayoutParams lp )
     {
-      bool autoWidth = !fillSet.HasFlag(SizeFlags.X);
-      bool autoHeight = !fillSet.HasFlag(SizeFlags.Y);
-      var scale = CalcScale( fillSize, size, autoWidth, autoHeight );
+      bool autoWidth = !lp.HasX;
+      bool autoHeight = !lp.HasY;
+      var scale = CalcScale( lp.Size, size, autoWidth, autoHeight );
       return scale * size;
     }
   }
