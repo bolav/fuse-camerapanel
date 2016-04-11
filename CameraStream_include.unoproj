@@ -30,7 +30,8 @@
         "Fuse.Scripting"
   ],
   "Includes": [
-    "./*.uno"
+    "./*.uno",
+    "./*.uxl",
     "CameraAndroid.java:Java:Android"
   ]
 }
