@@ -26,9 +26,12 @@
         "Android",
         "Experimental.iOS",
         "ObjC",
-        "Fuse.Drawing.Planar"
+        "Fuse.Drawing.Planar",
+        "Uno.Threading",
+        "Fuse.Scripting"
   ],
   "Includes": [
-    "*"
+    "*",
+    "CameraAndroid.java:Java:Android"
   ]
 }
