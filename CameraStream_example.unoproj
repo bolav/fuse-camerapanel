@@ -29,6 +29,7 @@
         "Fuse.Drawing.Planar"
   ],
   "Includes": [
-    "*"
+    "*",
+    "CameraAndroid.java:Java:Android"
   ]
 }
