@@ -8,7 +8,8 @@ using Android.android.app;
 [TargetSpecificImplementationAttribute]
 public extern(Android) class Camera
 {
-  public CameraFacing Facing { get; set;}
+  CameraFacing _facing = CameraFacing.Default;
+  public CameraFacing Facing { get { return _facing; } set { _facing = value; } }
   public readonly Java.Object Handle;
   readonly GLTextureHandle _textureHandle;
 

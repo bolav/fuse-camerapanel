@@ -7,7 +7,8 @@ using Uno.Threading;
 
 public class CameraVisual : ControlVisual<CameraStream>
 {
-  public Camera Camera { get; set; }
+  Camera _camera = new Camera();
+  public Camera Camera { get { return _camera; } set { _camera = value; } }
   readonly SizingContainer _sizing = new SizingContainer();
 
   public CameraFacing Facing {
