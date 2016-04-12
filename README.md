@@ -31,8 +31,8 @@ Using [fusepm](https://github.com/bolav/fusepm)
       cameraExt
           .takePicture()
           .then(function (file) {
-              debug_log("Filename: " + file.Name);
-              debug_log("Path: " + file.Path);
+              debug_log("Filename: " + file.name);
+              debug_log("Path: " + file.path);
               
               cameraExt.refreshCamera();
           })
