@@ -21,3 +21,30 @@ Using [fusepm](https://github.com/bolav/fusepm)
     <CameraStream>
       <CameraVisual Facing="Front" />
     </CameraStream>
+
+### JS/UX Approach
+
+    <JavaScript>
+    var cameraExt = require('CameraExtended');
+    
+    function shoot () {
+      cameraExt
+          .takePicture()
+          .then(function (file) {
+              debug_log("Filename: " + file.Name);
+              debug_log("Path: " + file.Path);
+              
+              cameraExt.refreshCamera();
+          })
+          .catch(function (e) {
+              debug_log(e);
+          });    
+    }
+    module.exports.shoot = shoot;
+    </JavaScript>
+    
+    <CameraStream>
+        <CameraVisual Camera="cam" Facing="Front"/>
+        <Camera ux:Global="cam" />
+        <CameraExtended ux:Global="CameraExtended" Camera="cam" />
+    </CameraStream>

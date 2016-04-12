@@ -127,6 +127,12 @@ public class CameraVisual : ControlVisual<CameraStream>
         Position: offset;
 
         TexCoord: VertexData * uvSize + uvPosition;
+
+        // rotate == 0, no rotation
+        // rotate == 1, 
+        // rotate == 2, 
+        // rotate == 3, flip x and y 
+
         TexCoord: (rotate == 0) 
           ? float2(prev.X, prev.Y) 
           : (rotate == 1) 

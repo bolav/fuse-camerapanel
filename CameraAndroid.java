@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.os.Bundle;
@@ -27,6 +28,8 @@ public class CameraAndroid {
   SurfaceTexture surfaceTexture;
   OnFrameAvailableListener listener;
   Camera.Size size;
+  int cameraId = 0;
+  CameraInfo cameraInfo;
 
 	public void takePictureJpeg(PictureCallback jpegCallback) throws IOException {
 		//take the picture
@@ -37,11 +40,31 @@ public class CameraAndroid {
     camera.startPreview();
   }
 
-  public void start(int rotation, int textureHandle)
+  public void start(int rotation, int textureHandle, int facing)
   {
+    for (int i=0; i < Camera.getNumberOfCameras(); i++) {
+      CameraInfo cinfo = new CameraInfo(); 
+      Camera.getCameraInfo(i, cinfo);
+      if (i == 0) {
+        cameraInfo = cinfo;
+        // Default camera
+      }
+
+      if ((facing == 1) && (cinfo.facing == CameraInfo.CAMERA_FACING_BACK)) {
+        cameraId = i;
+        cameraInfo = cinfo;
+        break;
+      }      
+      else if ((facing == 2) && (cinfo.facing == CameraInfo.CAMERA_FACING_FRONT)) {
+        cameraId = i;
+        cameraInfo = cinfo;
+        break;
+      }
+
+    }
     try {
 			// open the camera
-			camera = Camera.open(1);
+			camera = Camera.open(cameraId);
 		} catch (RuntimeException e) {
 			// check for exceptions
 			System.err.println(e);
@@ -72,9 +95,7 @@ public class CameraAndroid {
 		}
   }
 
-  public static int getRotationAngle(Activity mContext, int cameraId) {
-      android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-      android.hardware.Camera.getCameraInfo(cameraId, info);
+  public int getRotationAngle(Activity mContext) {
       int rotation = mContext.getWindowManager().getDefaultDisplay().getRotation();
       int degrees = 0;
       switch (rotation) {
@@ -92,23 +113,25 @@ public class CameraAndroid {
           break;
       }
       int result;
-      if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-          result = (info.orientation + degrees) % 360;
+      if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+          result = (cameraInfo.orientation + degrees) % 360;
           result = (360 - result) % 360; // compensate the mirror
+          // Solve image inverting
+          result += 180;
       } else { // back-facing
-          result = (info.orientation - degrees + 360) % 360;
+          result = (cameraInfo.orientation - degrees + 360) % 360;
       }
       return result;
   }
 
-  public static Bitmap rotate(Bitmap bitmap, int degree, boolean cameraFacingFront) {
+  public Bitmap rotate(Bitmap bitmap, int degree) {
     int w = bitmap.getWidth();
     int h = bitmap.getHeight();
 
     Matrix mtx = new Matrix();
     mtx.postRotate(degree);
 
-    if(cameraFacingFront)
+    if(cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
     {
       Matrix flipHorizontal = new Matrix();
       flipHorizontal.setScale(1,-1);

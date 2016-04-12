@@ -31,7 +31,7 @@ public extern (!iOS && !Android) class Camera
 public extern(iOS) class Camera
 {
   ObjC.ID _handle;
-  CameraFacing _facing = CameraFacing.Default;
+  public CameraFacing _facing = CameraFacing.Default;
   public CameraFacing Facing { get { return _facing; } set { _facing = value; } }
 
   public void Start() {

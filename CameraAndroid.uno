@@ -10,6 +10,7 @@ public extern(Android) class Camera
 {
   CameraFacing _facing = CameraFacing.Default;
   public CameraFacing Facing { get { return _facing; } set { _facing = value; } }
+  protected int IntFacing { get { return (int)_facing; } set { _facing = (CameraFacing)value; } }`
   public readonly Java.Object Handle;
   readonly GLTextureHandle _textureHandle;
 
@@ -48,7 +49,7 @@ public extern(Android) class Camera
     });
 
     android.app.Activity activity = (android.app.Activity)a;
-    cameraAndroid.start(activity.getWindowManager().getDefaultDisplay().getRotation(), textureHandle);
+    cameraAndroid.start(activity.getWindowManager().getDefaultDisplay().getRotation(), textureHandle, @{Camera:Of(_this).IntFacing:Get()});
   @}
 
   public void OnFrameAvailable()
@@ -98,12 +99,12 @@ public extern(Android) class Camera
           try {
             android.app.Activity activity = @(Activity.Package).@(Activity.Name).GetRootActivity();
 
-            int angleToRotate = cameraAndroid.getRotationAngle(activity, 1);
+            int angleToRotate = cameraAndroid.getRotationAngle(activity);
             // Solve image inverting
             angleToRotate += 180;
 
             android.graphics.Bitmap originalImg = android.graphics.BitmapFactory.decodeByteArray(data, 0, data.length);
-            android.graphics.Bitmap rotatedImg = cameraAndroid.rotate(originalImg, angleToRotate, true);            
+            android.graphics.Bitmap rotatedImg = cameraAndroid.rotate(originalImg, angleToRotate);            
 
             java.io.File storageDir = activity.getExternalFilesDir(null);
             java.io.File destination = java.io.File.createTempFile("JPEG_", ".jpg", storageDir);
@@ -162,7 +163,16 @@ public extern(Android) class Camera
     private set;
   }
 
-  public int Rotate { get { return 3; } }
+  public int Rotate { 
+    get { 
+      if (Facing == CameraFacing.Front) {
+        return 3;
+      } 
+      else {
+        return 1;
+      }
+    }
+  } 
 }
 
 class PictureResult
