@@ -1,4 +1,4 @@
-<App Theme="Basic">
+<App>
 	<ScrollView>
 	<StackPanel>
 		<Text Value="Teksten!!!" />
