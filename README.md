@@ -1,4 +1,4 @@
-Fuse CameraPanel
+Fuse CameraPanel [![Build Status](https://travis-ci.org/bolav/fuse-camerapanel.svg?branch=master)](https://travis-ci.org/bolav/fuse-camerapanel) ![Fuse Version](http://fuse-version.herokuapp.com/?repo=https://github.com/bolav/fuse-camerapanel)
 ================
 
 Library to use the camera as a panel in [Fuse](http://www.fusetools.com/).

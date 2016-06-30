@@ -3,7 +3,7 @@
 	<StackPanel>
 		<Text Value="Teksten!!!" />
 		<CameraStream>
-			<CameraVisual Facing="Front" />
+			<CameraVisual Facing="Back" />
 		</CameraStream>
 		<Text Value="Underteksten!!!" />
 	</StackPanel>
