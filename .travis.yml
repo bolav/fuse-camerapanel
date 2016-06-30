@@ -1,0 +1,33 @@
+env:
+  global:
+    - NDK_VERSION=r10e
+    - FUSE_VERSION=0.21.0.6650
+    - UNOPROJ=CameraStream_example
+    - NAME=CameraStreamExample
+language: 
+  - fuse
+  - objective-c
+  - android
+  - node_js
+os:
+  - osx
+sudo: required
+
+cache:
+  directories:
+#    - /Applications/Fuse.app
+#    - /usr/local/share/uno
+#    - $HOME/.fuse
+    - $HOME/Library/Android
+#    - $HOME/fuse
+
+
+before_install:
+  - ./.travis/install-ndk.sh
+  - ./.travis/install-fuse.sh
+  - ./.travis/install-fuseandroid.sh
+
+script:
+  - ./.travis/test_uno.sh
+  - ./.travis/test_ios.sh
+  - ./.travis/test_android.sh
