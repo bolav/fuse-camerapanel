@@ -5,6 +5,7 @@ using Uno;
 using Fuse.Elements;
 using Uno.Threading;
 
+
 public class CameraVisual : ControlVisual<CameraStream>
 {
   Camera _camera = null;
@@ -41,7 +42,7 @@ public class CameraVisual : ControlVisual<CameraStream>
     Camera.FrameAvailable -= OnFrameAvailable;
   }
 
-  public sealed override float2 GetMarginSize(LayoutParams layoutParams)
+  public override float2 GetMarginSize(LayoutParams layoutParams)
   {
     _sizing.snapToPixels = Control.SnapToPixels;
     _sizing.absoluteZoom = Control.AbsoluteZoom;
@@ -75,7 +76,7 @@ public class CameraVisual : ControlVisual<CameraStream>
   float2 _drawOrigin;
   float2 _drawSize;
   float4 _uvClip;
-  protected sealed override float2 OnArrangeMarginBox(float2 position, LayoutParams lp)
+  protected override float2 OnArrangeMarginBox(float2 position, LayoutParams lp)
   {
     var size = base.OnArrangeMarginBox(position, lp);
 
@@ -94,27 +95,25 @@ public class CameraVisual : ControlVisual<CameraStream>
     return size;
   }
 
-  protected sealed override void OnDraw(DrawContext dc)
-  {
-    var texture = Camera.VideoTexture;
-    if (texture == null)
+
+    public override void Draw(DrawContext dc)
+    {
+      var texture = Camera.VideoTexture;
+      if (texture == null)
       return;
-/*
-    if (Control.StretchMode == StretchMode.Scale9)
-      {
-        // Not implemented
-      }
+      VideoDrawElement.Impl.Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, Camera.Rotate);
+    }
 
-    else */
-      VideoDrawElement.Impl.
-        Draw(dc, this, _drawOrigin, _drawSize, _uvClip.XY, _uvClip.ZW - _uvClip.XY, texture, Camera.Rotate);
-  }
-
+ 
   class VideoDrawElement
   {
     static public VideoDrawElement Impl = new VideoDrawElement();
 
-    public void Draw(DrawContext dc, Node element, float2 offset, float2 size,
+    //public static void SetState(Node n, bool loaded)
+    //public static void SetState(Visual v, bool loading)
+    //element
+
+    public void Draw(DrawContext dc, Fuse.Visual element, float2 offset, float2 size, 
       float2 uvPosition, float2 uvSize, VideoTexture tex, int rotate)
     {
       draw
@@ -122,7 +121,7 @@ public class CameraVisual : ControlVisual<CameraStream>
         apply Fuse.Drawing.Planar.Rectangle;
 
         DrawContext: dc;
-        Node: element;
+        Visual: element;
         Size: size;
         Position: offset;
 
@@ -135,7 +134,7 @@ public class CameraVisual : ControlVisual<CameraStream>
 
         TexCoord: (rotate == 0) 
           ? float2(prev.X, prev.Y) 
-          : (rotate == 1) 
+          : (rotate == 1) // was 1
           ? float2(prev.Y, 1.0f - prev.X) 
           : (rotate == 2) 
           ? float2(1.0f - prev.X, 1.0f - prev.Y) 
