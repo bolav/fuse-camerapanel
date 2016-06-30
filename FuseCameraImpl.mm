@@ -210,7 +210,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)tearDownAVCapture
 {
-    [self cleanUpTextures];
+    //[self cleanUpTextures];
     
     CFRelease(_videoTextureCache);
 }
