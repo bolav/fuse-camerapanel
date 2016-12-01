@@ -18,8 +18,9 @@ Using [fusepm](https://github.com/bolav/fusepm)
 
 ### UX
 
-    <CameraStream>
-      <CameraVisual Facing="Front" />
+    <CameraStream> 
+        <Rotation DegreesY="180"/>
+        <CameraVisual Facing="Front" />
     </CameraStream>
 
 ### JS/UX Approach
