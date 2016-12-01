@@ -10,7 +10,7 @@ public extern(Android) class Camera
 {
   CameraFacing _facing = CameraFacing.Default;
   public CameraFacing Facing { get { return _facing; } set { _facing = value; } }
-  protected int IntFacing { get { return (int)_facing; } set { _facing = (CameraFacing)value; } }`
+  protected int IntFacing { get { return (int)_facing; } set { _facing = (CameraFacing)value; } }
   public readonly Java.Object Handle;
   readonly GLTextureHandle _textureHandle;
 
