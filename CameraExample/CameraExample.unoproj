@@ -1,0 +1,12 @@
+{
+  "Packages": [
+    "Fuse",
+    "FuseJS"
+  ],
+  "Projects": [
+  	"../CameraPanel/CameraPanel.unoproj"
+  ],
+  "Includes": [
+    "*"
+  ]
+}

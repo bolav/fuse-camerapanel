@@ -1,12 +1,3 @@
-/*
-     File: FuseCameraImpl.m
- Abstract: Fuse Glue.
-  Version: 1.0
- 
- Copyright (C) 2015 Bjørn-Olav Strand All Rights Reserved.
- 
- */
-
 #import <CoreVideo/CVOpenGLESTextureCache.h>
 #import "FuseCameraImpl.h"
 #import <OpenGLES/ES2/glext.h>
@@ -21,6 +12,8 @@
     NSString *_sessionPreset;
     
     AVCaptureSession *_session;
+    AVCaptureStillImageOutput * stillImageOutput;
+
     CVOpenGLESTextureCacheRef _videoTextureCache;
 
     uDelegate *_callback;
@@ -114,7 +107,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Check orientation of device
     // Check orientation of frame
     _textureOrientation = connection.videoOrientation;
-    // NSLog(@"%d", connection.videoOrientation);
+    //NSLog(@"%d", connection.videoOrientation);
 
     // Rotate frame
 
@@ -202,6 +195,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Set dispatch to be on the main thread so OpenGL can do things with the data
     [dataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];        
     
+    stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+    NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys: AVVideoCodecJPEG, AVVideoCodecKey, nil];
+    [stillImageOutput setOutputSettings:outputSettings];
+
+    [_session addOutput:stillImageOutput];
     [_session addOutput:dataOutput];
     [_session commitConfiguration];
     
@@ -213,6 +211,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     //[self cleanUpTextures];
     
     CFRelease(_videoTextureCache);
+}
+
+- (void*)getStillImageOutputHandle
+{
+    return (void*)stillImageOutput;
 }
 
 @end

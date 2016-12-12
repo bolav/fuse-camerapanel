@@ -2,8 +2,8 @@ env:
   global:
     - NDK_VERSION=r10e
     - FUSE_VERSION=0.21.0.6650
-    - UNOPROJ=CameraStream_example
-    - NAME=CameraStreamExample
+    - UNOPROJ=CameraExample/CameraExample
+    - NAME=CameraExample
 language: 
   - fuse
   - objective-c
