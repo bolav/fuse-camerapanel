@@ -18,47 +18,47 @@ Using [fusepm](https://github.com/bolav/fusepm)
 
 ### JS/UX Approach
 
-        <CameraExtended ux:Global="CameraAPI" />
+    <CameraExtended ux:Global="CameraAPI" />
 
-        <JavaScript>
-            var Observable = require("FuseJS/Observable");
-            var FileSystem = require("FuseJS/FileSystem");
-            var CameraAPI = require("CameraAPI");
+    <JavaScript>
+        var Observable = require("FuseJS/Observable");
+        var FileSystem = require("FuseJS/FileSystem");
+        var CameraAPI = require("CameraAPI");
 
-            function take_picture() {
-                CameraAPI.takePicture("my_camera")
-                    .then(function (result) {
-                        console.log("Got a pic!");
-                        console.log("Name: " + result.name);
-                        console.log("Path: " + result.path);
+        function take_picture() {
+            CameraAPI.takePicture("my_camera")
+                .then(function (result) {
+                    console.log("Got a pic!");
+                    console.log("Name: " + result.name);
+                    console.log("Path: " + result.path);
 
-                        return FileSystem.readBufferFromFile(result.path);
-                    })
-                    .then(function(contents) {
-                        console.log("Got contents: " + JSON.stringify(contents));
-                    })
-                    .catch(function(err) {
-                        console.log("Error: " + JSON.stringify(err));
-                    });
-            }
+                    return FileSystem.readBufferFromFile(result.path);
+                })
+                .then(function(contents) {
+                    console.log("Got contents: " + JSON.stringify(contents));
+                })
+                .catch(function(err) {
+                    console.log("Error: " + JSON.stringify(err));
+                });
+        }
 
-            function refresh_camera() {
-                CameraAPI.refreshCamera("my_camera");
-            }
+        function refresh_camera() {
+            CameraAPI.refreshCamera("my_camera");
+        }
 
-            var camera_available = Observable(false);
+        var camera_available = Observable(false);
 
-            CameraAPI.requestCameraPermission().then(function () { camera_available.value = true });
+        CameraAPI.requestCameraPermission().then(function () { camera_available.value = true });
 
-            module.exports = {
-                take_picture:take_picture,
-                camera_available:camera_available,
-            }
+        module.exports = {
+            take_picture:take_picture,
+            camera_available:camera_available,
+        }
 
-        </JavaScript>
+    </JavaScript>
 
-        <WhileTrue Value="{camera_available}">
-            <CameraStream Dock="Fill" >
-                <CameraVisual Facing="Back" ux:Name="my_camera" />
-            </CameraStream>
-        </WhileTrue>
+    <WhileTrue Value="{camera_available}">
+        <CameraStream Dock="Fill" >
+            <CameraVisual Facing="Back" ux:Name="my_camera" />
+        </CameraStream>
+    </WhileTrue>
