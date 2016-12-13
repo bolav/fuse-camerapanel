@@ -1,9 +1,9 @@
 {
-  "RootNamespace":"",
+  "Description": "CameraPanel",
   "Packages": [
     "Fuse",
     "FuseJS",
-    "Android"
+    "Uno.Permissions",
   ],
   "Includes": [
     "./*.uno",

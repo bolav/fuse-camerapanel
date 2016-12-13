@@ -1,0 +1,67 @@
+<App>
+	<ClientPanel>
+		<DockPanel>
+
+			<CameraExtended ux:Global="CameraAPI" />
+
+			<JavaScript>
+
+				var Observable = require("FuseJS/Observable");
+
+				var FileSystem = require("FuseJS/FileSystem");
+
+				var CameraAPI = require("CameraAPI");
+
+				function take_picture() {
+					CameraAPI.takePicture("my_camera")
+						.then(function (result) {
+							console.log("Got a pic!");
+							console.log("Name: " + result.name);
+							console.log("Path: " + result.path);
+
+							return FileSystem.readBufferFromFile(result.path);
+						})
+						.then(function(contents) {
+							console.log("Got contents: " + JSON.stringify(contents));
+						})
+						.catch(function(err) {
+							console.log("Error: " + JSON.stringify(err));
+						});
+				}
+
+				function refresh_camera() {
+					CameraAPI.refreshCamera("my_camera");
+				}
+
+				var camera_available = Observable(false);
+
+				CameraAPI.requestCameraPermission()
+					.then(function () {
+						camera_available.value = true
+					}).catch(function (err) {
+						console.log("Failed to get camera permission: " + err.message);
+					});
+
+				module.exports = {
+					take_picture:take_picture,
+					refresh_camera:refresh_camera,
+					camera_available:camera_available,
+				}
+
+			</JavaScript>
+
+			<WhileTrue Value="{camera_available}">
+				<CameraStream Dock="Fill" >
+					<CameraVisual Facing="Back" ux:Name="my_camera" />
+				</CameraStream>
+			</WhileTrue>
+
+			<Panel Dock="Bottom">
+				<StackPanel>
+					<Button Text="Take picture" Clicked="{take_picture}" Margin="20" />
+					<Button Text="Refresh camera" Clicked="{refresh_camera}" Margin="20" />
+				</StackPanel>
+			</Panel>
+		</DockPanel>
+	</ClientPanel>
+</App>

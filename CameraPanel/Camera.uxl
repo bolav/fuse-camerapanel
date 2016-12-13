@@ -1,0 +1,81 @@
+<Package>
+	﻿<Extensions Backend="CPlusPlus" Condition="Android">
+		<Require AndroidManifest.Permission="android.permission.CAMERA" />
+	</Extensions>
+	<Extensions Backend="CPlusPlus" Condition="iOS">
+		<CopyFile HeaderFile="FuseCameraImpl.h" />
+		<ProcessFile SourceFile="FuseCameraImpl.mm" />
+			<Type Name="CameraImpl">
+				<Set FileExtension="mm" />
+				<Require Entity="Uno.Action" />
+					<Require Entity="ObjC.Object" />
+					<Require Source.Import="FuseCameraImpl.h" />
+					<Method Signature="allocateCamera():ObjC.ID">
+						<Body>
+							FuseCameraImpl *fci = [[FuseCameraImpl alloc] init];
+							return (id)fci;
+						</Body>
+					</Method>
+					<Method Signature="initialize(ObjC.ID)">
+						<Expression Condition="iOS">
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+						</Expression>
+					</Method>
+					<Method Signature="start(ObjC.ID,int)">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							[fci startCam: $1];
+						</Body>
+					</Method>
+					<Method Signature="stop(ObjC.ID)">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							[fci stopCam];
+						</Body>
+					</Method>
+					<Method Signature="getHeight(ObjC.ID):int">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							// return 640;
+							int height = [fci textureHeight];
+							return height;
+						</Body>
+					</Method>
+					<Method Signature="getWidth(ObjC.ID):int">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							// return 480;
+							int width = [fci textureWidth];
+							return width;
+						</Body>
+					</Method>
+					<Method Signature="getRotation(ObjC.ID):int">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							return [fci getRotation];
+						</Body>
+					</Method>
+					<Method Signature="updateTexture(ObjC.ID):OpenGL.GLTextureHandle">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							int t = [fci Texture];
+							return t;
+						</Body>
+					</Method>
+					<Method Signature="addUpdateListener(ObjC.ID, Uno.Action)">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							[fci addUpdateListener: $1];
+						</Body>
+					</Method>
+
+					<Method Signature="getStillImageOutputHandle(ObjC.ID):Uno.IntPtr">
+						<Body>
+							FuseCameraImpl *fci = (FuseCameraImpl *)$0;
+							return [fci getStillImageOutputHandle];
+						</Body>
+					</Method>
+
+			</Type>
+	</Extensions>
+</Package>
