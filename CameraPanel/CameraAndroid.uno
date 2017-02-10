@@ -42,11 +42,7 @@ public extern(Android) class Camera
 		cameraAndroid.setOnFrameAvailableListener(new android.graphics.SurfaceTexture.OnFrameAvailableListener() {
 			public void onFrameAvailable(android.graphics.SurfaceTexture surfaceTexture) {
 				if(cameraAndroid.HasSurfaceTexture())
-				{
-					@{Camera:Of(_this).MakeContextCurrent():Call()};
-					surfaceTexture.updateTexImage();
-					@{Camera:Of(_this).OnFrameAvailable():Call()};
-				}
+					@{Camera:Of(_this).DispatchFrameAvailable(Java.Object):Call(surfaceTexture)};
 			}
 		});
 
@@ -54,12 +50,34 @@ public extern(Android) class Camera
 		cameraAndroid.start(activity.getWindowManager().getDefaultDisplay().getRotation(), textureHandle, @{Camera:Of(_this).IntFacing:Get()});
 	@}
 
-	void MakeContextCurrent()
+	class FrameAvailableClosure
 	{
-		if defined(Android)
-			extern "GLHelper::MakeWorkerThreadContextCurrent()";
+		Camera _camera;
+		Java.Object _tex;
+
+		public FrameAvailableClosure(Camera camera, Java.Object tex)
+		{
+			_camera = camera;
+			_tex = tex;
+		}
+
+		public void FrameAvailable()
+		{
+			UpdateTexImage(_tex);
+			_camera.OnFrameAvailable();
+		}
+
+		[Foreign(Language.Java)]
+		void UpdateTexImage(Java.Object tex)
+		@{
+			((android.graphics.SurfaceTexture)tex).updateTexImage();
+		@}
 	}
 
+	void DispatchFrameAvailable(Java.Object surfaceTexture)
+	{
+		Fuse.UpdateManager.Dispatcher.Invoke(new FrameAvailableClosure(this, surfaceTexture).FrameAvailable);
+	}
 
 	public void OnFrameAvailable()
 	{
